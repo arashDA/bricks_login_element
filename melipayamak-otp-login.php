@@ -239,10 +239,10 @@ function login_send_otp($input, $username, $password, $template_id){
         $user = $users[0];
         $email = $user->user_email;
 
-        if ($email && is_email($email)) {
-            // Send email asynchronously to avoid blocking the request
+        if (login_is_real_email($email)) {
             wp_schedule_single_event(time(), 'login_send_email_otp_async', [$email, $otp]);
         }
+
     }
     return true;
 }
@@ -277,35 +277,7 @@ function login_verify_otp($phone, $code){
 
 
 
-/*========================================================
-  5. Login or Register
-========================================================*/
-// function login_or_register($phone){
-//     $phone = login_normalize_phone($phone);
 
-//     $users = get_users([
-//         'meta_key'=>'phone',
-//         'meta_value'=>$phone,
-//         'number'=>1
-//     ]);
-
-//     if (!empty($users)) {
-//         $user_id = $users[0]->ID;
-//     } else {
-//         // create a unique username and email placeholder
-//         $username = $phone;
-//         $email = $phone . '@sample.gasht';
-//         $password = wp_generate_password(12, false);
-//         $user_id = wp_create_user($username, $password, $email);
-//         if (is_wp_error($user_id)) return $user_id;
-//         update_user_meta($user_id, 'phone', $phone);
-//     }
-
-//     wp_set_current_user($user_id);
-//     wp_set_auth_cookie($user_id);
-
-//     return $user_id;
-// }
 
 /*========================================================
   6. AJAX Handlers with nonce and basic validation
@@ -509,7 +481,7 @@ function login_ajax_register_user(){
 
     // Create user
     $username = $phone;
-    $email    = $phone . '@gasht.com';
+    $email    = $phone . '@OtpPlugin.com';
 
     $user_id = wp_create_user($username, $password, $email);
 
@@ -741,6 +713,21 @@ add_action('admin_init', function () {
     register_setting('otp_login_settings', 'otp_login_password');
     register_setting('otp_login_settings', 'otp_login_template_id');
 });
+
+
+// Email Helper
+function login_is_real_email($email) {
+    if (!$email || !is_email($email)) {
+        return false;
+    }
+
+    // Block auto-generated emails
+    if (str_ends_with($email, '@OtpPlugin.com')) {
+        return false;
+    }
+
+    return true;
+}
 
 
 function otp_login_settings_page() {

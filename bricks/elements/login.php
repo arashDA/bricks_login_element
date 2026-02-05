@@ -196,6 +196,11 @@ public function set_control_groups() {
         'tab'   => 'style',
     ];
 
+    $this->control_groups['style_main_header'] = [
+        'title' => esc_html__('Main Header', 'bricks'),
+        'tab'   => 'style',
+    ];
+
     $this->control_groups['style_success_message_text'] = [
         'title' => esc_html__('Success Message Text', 'bricks'),
         'tab'   => 'style',
@@ -209,6 +214,24 @@ public function set_control_groups() {
     $this->control_groups['style_notice_message_text'] = [
         'title' => esc_html__('Notice Message Text', 'bricks'),
         'tab'   => 'style',
+    ];
+
+    $this->control_groups['style_back_logo'] = [
+        'title' => esc_html__('Style Icon Back', 'bricks'),
+        'tab' => 'style',
+    ];
+    $this->control_groups['style_site_logo'] = [
+        'title' => esc_html__('Style Site Logo', 'bricks'),
+        'tab' => 'style',
+    ];
+
+    $this->control_groups['backLogo'] = [
+        'title' => esc_html__('Icon Back', 'bricks'),
+        'tab' => 'content',
+    ];
+    $this->control_groups['siteLogo'] = [
+        'title' => esc_html__('Site Logo', 'bricks'),
+        'tab' => 'content',
     ];
 
 
@@ -619,88 +642,6 @@ public function set_controls() {
         ], 
     ];
 
-    /*-------------------------
-     * STYLE: BUTTONS
-     *-------------------------*/
-    // $this->controls['buttonBackground'] = [
-    //     'tab'   => 'style',
-    //     'group' => 'style_buttons',
-    //     'label' => esc_html__('Background', 'bricks'),
-    //     'type'  => 'color',
-    //     'css'   => [
-    //         ['property' => 'background-color', 'selector' => '.login-btn'],
-    //     ],
-    // ];
-
-    // $this->controls['buttonText'] = [
-    //     'tab'   => 'style',
-    //     'group' => 'style_buttons',
-    //     'label' => esc_html__('Text Color', 'bricks'),
-    //     'type'  => 'color',
-    //     'css'   => [
-    //         ['property' => 'color', 'selector' => '.login-btn'],
-    //     ],
-    // ];
-
-    // $this->controls['buttonBorder'] = [
-    //     'tab'   => 'style',
-    //     'group' => 'style_buttons',
-    //     'label' => esc_html__('Border', 'bricks'),
-    //     'type'  => 'border',
-    //     'css'   => [
-    //         ['property' => 'border', 'selector' => '.login-btn'],
-    //     ],
-    // ];
-
-    // $this->controls['buttonTypography'] = [
-    //     'tab'   => 'style',
-    //     'group' => 'style_buttons',
-    //     'label' => esc_html__('Typography', 'bricks'),
-    //     'type'  => 'typography',
-    //     'css'   => [
-    //         ['property' => 'font', 'selector' => '.login-btn'],
-    //     ],
-    // ];
-
-    // $this->controls['buttonPadding'] = [
-    //     'tab'   => 'style',
-    //     'group' => 'style_buttons',
-    //     'label' => esc_html__('Padding', 'bricks'),
-    //     'type'  => 'dimensions',
-    //     'css'   => [
-    //         ['property' => 'padding', 'selector' => '.login-btn'],
-    //     ],
-    // ];
-
-    // $this->controls['buttonHoverBackground'] = [
-    //     'tab'   => 'style',
-    //     'group' => 'style_buttons',
-    //     'label' => esc_html__('Background (Hover)', 'bricks'),
-    //     'type'  => 'color',
-    //     'css'   => [
-    //         ['property' => 'background-color', 'selector' => '.login-btn:hover'],
-    //     ],
-    // ];
-
-    // $this->controls['buttonHoverText'] = [
-    //     'tab'   => 'style',
-    //     'group' => 'style_buttons',
-    //     'label' => esc_html__('Text (Hover)', 'bricks'),
-    //     'type'  => 'color',
-    //     'css'   => [
-    //         ['property' => 'color', 'selector' => '.login-btn:hover'],
-    //     ],
-    // ];
-
-    // $this->controls['buttonHoverBorder'] = [
-    //     'tab'   => 'style',
-    //     'group' => 'style_buttons',
-    //     'label' => esc_html__('Border Color (Hover)', 'bricks'),
-    //     'type'  => 'color',
-    //     'css'   => [
-    //         ['property' => 'border-color', 'selector' => '.login-btn:hover'],
-    //     ],
-    // ];
 
     /*-------------------------
      * STYLE: LABELS
@@ -961,6 +902,21 @@ public function set_controls() {
         ],
     ];
 
+    $this->controls['backlogo'] = [
+        'tab'   => 'content',
+        'group' => 'backLogo',
+        'label' => esc_html__('Back Logo', 'textdomain'),
+        'type'  => 'image',
+    ];
+
+    $this->controls['sitelogo'] = [
+        'tab'   => 'content',
+        'group' => 'siteLogo',
+        'label' => esc_html__('Website Logo', 'textdomain'),
+        'type'  => 'image',
+    ];
+
+
     // Generate step-specific controls dynamically to reduce code repetition
     $this->generate_step_controls();
 
@@ -1034,7 +990,7 @@ private function generate_step_controls() {
             'title'    => 'OTP Input',
             'group'    => 'style_otp_input',
             'selector' => '.login-input-otp',
-            'controls' => ['background', 'border', 'padding', 'width', 'margin']
+            'controls' => ['typography','background', 'border', 'padding', 'width', 'margin']
         ],
         'setpassword' => [
             'title'    => 'Set Password Input',
@@ -1111,6 +1067,25 @@ private function generate_step_controls() {
             'selector' => '.country-code',
             'controls' => ['typography', 'margin','padding','border','width','height','background']
         ],
+        'main-header' => [
+            'title'    => 'Main Header',
+            'group'    => 'style_main_header',
+            'selector' => '.main-header',
+            'controls' => ['typography', 'margin','padding','border','width','height','background']
+        ],
+        'back-logo' => [
+            'title'    => 'Back Logo',
+            'group'    => 'style_back_logo',
+            'selector' => '.auth-back-logo',
+            'controls' => ['typography', 'margin','padding','border','width','height','background']
+        ],
+        'site-logo' => [
+            'title'    => 'Site Logo',
+            'group'    => 'style_site_logo',
+            'selector' => '.auth-site-logo',
+            'controls' => ['typography', 'margin','padding','border','width','height','background']
+        ],
+
     ];
 
     $message_steps = [
@@ -1300,6 +1275,7 @@ public function render() {
         $this->set_attribute('_root', 'class', ['login-otp-wrapper', 'auth-box']);
         $icon_url = plugins_url( 'assets/img/AlertIcon.svg', __FILE__ );
         // Base element classes
+        $this->set_attribute('mainHeader', 'class', 'main-header');   
         $this->set_attribute('header', 'class', 'auth-header login-header');
         $this->set_attribute('title', 'class', 'auth-title login-title');
         $this->set_attribute('subtitle', 'class', 'auth-subtitle login-subtitle');
@@ -1337,10 +1313,20 @@ public function render() {
         $this->set_attribute('forgot_input', 'class', 'auth-step-input login-input login-input-forgot');
         $this->set_attribute('forgot_btn', 'class', 'auth-btn login-btn login-btn-forgot');
 
-        // message attributes
-        // $this->set_attribute('success_message', 'data-role', '.login-message.msg-success');
-        // $this->set_attribute('danger_message', 'data-role', '.login-message.msg-danger');
-        // $this->set_attribute('notice_message', 'data-role', '.login-message.msg-notice');
+        // ICON
+        $back_logo = $this->settings['backlogo'] ?? null;
+        $site_logo = $this->settings['sitelogo'] ?? null;
+
+        $back_logo_url = ! empty($back_logo['url']) ? esc_url($back_logo['url']) : '';
+        $site_logo_url = ! empty($site_logo['url']) ? esc_url($site_logo['url']) : '';
+        $this->set_attribute('authBackLogo', 'class', 'auth-back-logo');
+        $this->set_attribute('authSiteLogo', 'class', 'auth-site-logo');
+
+
+        $site_url = home_url() ;
+        $this->set_attribute('goBackPage','onClick', 'window.history.back()');
+
+
 
         // متغیرهای محتوا
         $phone_label = esc_html($this->settings['phone_label'] ?? 'شماره تلفن همراه');
@@ -1395,6 +1381,12 @@ public function render() {
         echo "<div {$this->render_attributes('_root')}>";
         // Step 1: Phone (OTP Login)
         echo "<div {$this->render_attributes('step')} data-role='step' data-step='1' style='display:none;'  >
+                    <div {$this->render_attributes('mainHeader')}>
+                            <img {$this->render_attributes('authBackLogo', 'goBackPage')}  src='$back_logo_url' alt='Back Logo'>
+                            <a {$this->render_attributes('authSiteLogo')} href='$site_url'>
+                                <img  src='$site_logo_url' alt='Site Logo'>
+                            </a>
+                    </div>
                     <div {$this->render_attributes('header')}>
                             <h2 {$this->render_attributes('title')} data-role='form-title'>{$login_title}</h2>
                             <p {$this->render_attributes('subtitle')} data-role='form-subtitle'>{$login_subtitle}</p>
@@ -1408,12 +1400,21 @@ public function render() {
                         <div {$this->render_attributes('message')} data-role='message'></div>
                     </div>
                     <div class='button-container'>
-                        <button {$this->render_attributes('login_btn_send')} data-role='send'>{$login_button_title}</button>
+                        <button {$this->render_attributes('login_btn_send')} data-role='send'>
+                            <span class='btn-text'>{$login_button_title}</span>
+                            <span class='btn-spinner'></span>    
+                        </button>
                         <button {$this->render_attributes('login_btn_switch')} data-role='switch-to-password'>{$login_switch_password}</button>
                     </div>
                 </div>";
         // Step 1b: Phone + Password (Password Login)
         echo "<div {$this->render_attributes('step')} data-role='step' data-step='password' >
+                <div {$this->render_attributes('mainHeader')}>
+                        <img data-role='switch-to-otp' {$this->render_attributes('authBackLogo')}  src='$back_logo_url' alt='Back Logo'>
+                        <a {$this->render_attributes('authSiteLogo')} href='$site_url'>
+                            <img  src='$site_logo_url' alt='Site Logo'>
+                        </a>
+                </div>
                 <div {$this->render_attributes('header')}>
                     <h2 {$this->render_attributes('title')} data-role='form-title'>{$login_password_title}</h2>
                     <p {$this->render_attributes('subtitle')} data-role='form-subtitle'>{$login_password_Subtitle}</p>
@@ -1466,12 +1467,22 @@ public function render() {
                     <button {$this->render_attributes('password_btn_forgot')} data-role='forgot'>{$login_password_forgetPassword_title}</button>
                 </div>
                 <div class='button-container'>
-                    <button {$this->render_attributes('password_btn_login')} data-role='login-password'>{$login_password_button_title}</button>
+                    <button {$this->render_attributes('password_btn_login')} data-role='login-password'>
+                        <span class='btn-text' >{$login_password_button_title}</span>
+                        <span class='btn-spinner'></span>
+                    </button>
                     <button {$this->render_attributes('password_btn_otp')} data-role='switch-to-otp'>{$login_password_loginOTP_title}</button>
                 </div>
               </div>";
         // Step 2: OTP
         echo "<div {$this->render_attributes('step')} data-role='step' data-step='2' style='display:none;'  >
+                    <div {$this->render_attributes('mainHeader')}>
+                            <img data-role='edit-number' {$this->render_attributes('authBackLogo')}  src='$back_logo_url' alt='Back Logo'>
+
+                            <a {$this->render_attributes('authSiteLogo')} href='$site_url'>
+                                <img  src='$site_logo_url' alt='Site Logo'>
+                            </a>
+                    </div>
                     <div {$this->render_attributes('header')}>
                             <h2 {$this->render_attributes('title')} data-role='form-title'>{$login_OTP_title}</h2>
                             <div {$this->render_attributes('subtitle')}>
@@ -1483,7 +1494,7 @@ public function render() {
                     <div>
                         <p {$this->render_attributes('edit_number')} data-role='edit-number' cursor-pointer = true>{$login_OTP_EditNumber}</p>
                         <div {$this->render_attributes('login_input')}>
-                            <input type='tel' data-role='otp' placeholder='{$Forget_password_step2_placeholder}' />
+                            <input {$this->render_attributes('otp_input')} type='tel' data-role='otp' placeholder='{$Forget_password_step2_placeholder}' />
                         </div>
                         <p {$this->render_attributes('resend_timer')} data-role='timer'></p>
                         <div {$this->render_attributes('resend_wrapper')}>
@@ -1492,12 +1503,22 @@ public function render() {
                         <div {$this->render_attributes('message')} data-role='message'></div>
                     </div>
                     <div>
-                        <button {$this->render_attributes('otp_btn_verify')} data-role='verify' disabled>{$login_OTP_button_title}</button>
+                        <button {$this->render_attributes('otp_btn_verify')} data-role='verify' disabled>
+                            <span class='btn-text' >{$login_OTP_button_title}</span>
+                            <span class='btn-spinner'></span>
+                        </button>
                     </div>
                </div>";
         // Step 3: Set Password
         echo "
         <div {$this->render_attributes('step')} data-role='step' data-step='3' style='display:none;' >
+                <div {$this->render_attributes('mainHeader')}>
+                        <img data-role='switch-to-otp'  {$this->render_attributes('authBackLogo')}  src='$back_logo_url' alt='Back Logo'>
+
+                        <a {$this->render_attributes('authSiteLogo')} href='$site_url'>
+                            <img  src='$site_logo_url' alt='Site Logo'>
+                        </a>
+                </div>
                 <div {$this->render_attributes('header')}>
                     <h2 {$this->render_attributes('title')} data-role='form-title'>{$set_password_title}</h2>
                     <p {$this->render_attributes('subtitle')} data-role='form-subtitle'>{$set_password_subTitle}</p>
@@ -1539,10 +1560,20 @@ public function render() {
                     </div>
                     <div {$this->render_attributes('message')} data-role='message'></div>
                 </div>
-                    <button {$this->render_attributes('setpassword_btn')} data-role='register'>{$set_password_button_title}</button>
+                    <button {$this->render_attributes('setpassword_btn')} data-role='register'>
+                        <span class='btn-text' >{$set_password_button_title}</span>
+                        <span class='btn-spinner'></span>
+                    </button>
         </div>";
         // Forgot Password Steps
         echo "<div {$this->render_attributes('step')} data-step='forgot-1' style='display:none;'>
+                <div {$this->render_attributes('mainHeader')}>
+                        <img data-role='switch-to-password' {$this->render_attributes('authBackLogo')}  src='$back_logo_url' alt='Back Logo'>
+
+                        <a {$this->render_attributes('authSiteLogo')} href='$site_url'>
+                            <img  src='$site_logo_url' alt='Site Logo'>
+                        </a>
+                </div>
                 <div {$this->render_attributes('header')}>
                         <h2 {$this->render_attributes('title')} data-role='form-title'>{$Forget_password_step1_title}</h2>
                         <p {$this->render_attributes('subtitle')} data-role='form-subtitle'>{$Forget_password_step1_subTitle}</p>
@@ -1555,17 +1586,27 @@ public function render() {
                     </div>
                     <div {$this->render_attributes('message')}  data-role='message'></div>
                 </div>
-                <button {$this->render_attributes('forgot_btn')} data-role='send-forgot'>{$Forget_password_step1_button_title}</button>
+                <button {$this->render_attributes('forgot_btn')} data-role='send-forgot'>
+                    <span class='btn-text' >{$Forget_password_step1_button_title}</span>
+                    <span class='btn-spinner'></span>
+                </button>
               </div>";
         echo "<div {$this->render_attributes('step')}  data-step='forgot-2' style='display:none;' >
+                <div {$this->render_attributes('mainHeader')}>
+                        <img data-role='edit-number-forget' {$this->render_attributes('authBackLogo')}  src='$back_logo_url' alt='Back Logo'>
+
+                        <a {$this->render_attributes('authSiteLogo')} href='$site_url'>
+                            <img  src='$site_logo_url' alt='Site Logo'>
+                        </a>
+                </div>
                 <div {$this->render_attributes('header')}>
                         <h2 {$this->render_attributes('title')} data-role='form-title'>{$Forget_password_step2_title}</h2>
                         <p {$this->render_attributes('subtitle')} data-role='form-subtitle'>{$Forget_password_step2_subTitle}</p>
                 </div>
                 <div>
-                    <p {$this->render_attributes('edit_number')} data-role='edit-number' cursor-pointer = true>{$login_OTP_EditNumber}</p>
+                    <p {$this->render_attributes('edit_number')} data-role='edit-number-forget' cursor-pointer = true>{$login_OTP_EditNumber}</p>
                     <div {$this->render_attributes('login_input')}>
-                        <input type='tel' data-role='otp' placeholder='{$Forget_password_step2_placeholder}' />
+                        <input {$this->render_attributes('otp_input')} type='tel' data-role='otp' placeholder='{$Forget_password_step2_placeholder}' />
                     </div>
                     <p {$this->render_attributes('resend_timer')} data-role='timer'></p>
                     <div {$this->render_attributes('resend_wrapper')}>
@@ -1573,9 +1614,19 @@ public function render() {
                     </div>
                     <div {$this->render_attributes('message')} data-role='message'></div>
                 </div>
-                <button {$this->render_attributes('forgot_btn')} data-role='verify-forgot' disabled>{$Forget_password_step2_button_title}</button>
+                <button {$this->render_attributes('forgot_btn')} data-role='verify-forgot' disabled>
+                    <span class='btn-text' >{$Forget_password_step2_button_title}</span>
+                    <span class='btn-spinner'></span>
+                </button>
               </div>";
-        echo "<div {$this->render_attributes('step')} data-step='forgot-3' style='display:none;'>
+        echo "<div {$this->render_attributes('step')} data-step='forgot-3' style='display:none;' >
+                <div {$this->render_attributes('mainHeader')}>
+                        <img data-role='edit-number-forget'  {$this->render_attributes('authBackLogo')}  src='$back_logo_url' alt='Back Logo'>
+
+                        <a {$this->render_attributes('authSiteLogo')} href='$site_url'>
+                            <img  src='$site_logo_url' alt='Site Logo'>
+                        </a>
+                </div>
                 <div {$this->render_attributes('header')}>
                         <h2 {$this->render_attributes('title')} data-role='form-title'>{$Forget_password_step3_title}</h2>
                         <p {$this->render_attributes('subtitle')} data-role='form-subtitle'>{$Forget_password_step3_subTitle}</p>
@@ -1617,7 +1668,10 @@ public function render() {
                     </div>
                     <div {$this->render_attributes('message')} data-role='message'></div>
                 </div>
-                <button {$this->render_attributes('forgot_btn')} data-role='reset-password'>{$Forget_password_step3_button_title}</button>
+                <button {$this->render_attributes('forgot_btn')} data-role='reset-password'>
+                    <span class='btn-text' >{$Forget_password_step3_button_title}</span>
+                    <span class='btn-spinner'></span>
+                </button>
               </div>";
         echo "</div>"; // end _root
     }

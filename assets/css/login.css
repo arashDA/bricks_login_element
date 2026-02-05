@@ -1,8 +1,6 @@
 /* Message Types */
 .login-message {
     display: none;
-    margin: 15px 0;
-    padding: 12px 15px;
     border-radius: 4px;
     font-size: 14px;
     line-height: 1.5;
@@ -11,7 +9,9 @@
 
 .login-message.msg-success {
     position: absolute;
-    bottom: 160px;
+    bottom: 70px;
+    width: 420px;
+    margin-right: -16px;
     
 }
 
@@ -24,6 +24,46 @@
     margin: 4px;
 }
 
+
+
+/* Button loading state */
+.btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+button .btn-spinner {
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(255,255,255,.4);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin .8s linear infinite;
+    display: none;
+    box-sizing: border-box;
+}
+
+button.is-loading .btn-text {
+    display: none !important;
+}
+
+button.is-loading .btn-spinner {
+    display: inline-block !important;
+}
+
+button.is-loading {
+    pointer-events: none;
+}
+
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+
+
 /* Animation */
 @keyframes slideIn {
     from {
@@ -35,5 +75,13 @@
         transform: translateY(0);
     }
 }
+
+@media (max-width: 478px) {
+    .login-message.msg-success {
+        width: 90%;
+        margin-right: unset;
+    }
+}
+
 
 

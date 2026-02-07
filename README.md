@@ -1,4 +1,4 @@
-## Login OTP Login for Bricks
+## OTP Login for Bricks
 
 A WordPress plugin that provides OTP-based login functionality integrated with Bricks Builder. It supports login via SMS OTP (using Melipayamak API), email OTP for existing users, password login, and password reset flows. Includes a custom Bricks element for easy integration into your site.
 

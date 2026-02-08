@@ -103,6 +103,15 @@
             };
         }
 
+        // Helper to pick best redirect URL: prefer the page user came from (returnTo),
+        // then any stored loginRedirect, then server-provided redirect, then plugin default.
+        function getRedirectUrl(resData) {
+            if (wrapper._state && wrapper._state.returnTo) return wrapper._state.returnTo;
+            if (wrapper._state && wrapper._state.loginRedirect) return wrapper._state.loginRedirect;
+            if (resData && resData.redirect) return resData.redirect;
+            return (typeof loginOtpData !== 'undefined' && loginOtpData.redirect) ? loginOtpData.redirect : '/';
+        }
+
         // Find the message element inside the currently visible step so messages
         // don't bleed across different steps (OTP, password, forgot flows).
         function getActiveMessage() {
@@ -251,8 +260,8 @@
                 
                 if (res.success) {
                     showMessage(wrapper.dataset.msgLoggedIn || 'ورود موفقیت امیز بود', 'success');
-                    const redirect = res.data?.redirect || loginOtpData.redirect
-                    setTimeout(() => window.location.href = redirect, 500);
+                        const redirect = getRedirectUrl(res.data);
+                        setTimeout(() => window.location.href = redirect, 500);
                 } else {
                     showMessage('نام کاربری یا رمز عبور اشتباه است.', 'notice');
 
@@ -404,7 +413,7 @@
                     // Existing user → login
                     if (res.data.status === 'logged_in') {
                         showMessage(wrapper.dataset.msgLoggedIn || 'ورود موفقیت آمیز', 'success');
-                        const redirect = res.data?.redirect || loginOtpData.redirect 
+                        const redirect = getRedirectUrl(res.data);
                         setTimeout(() => window.location.href = redirect, 500);
                     }
 
@@ -466,7 +475,7 @@
                 setButtonLoading(btn,false);
                 if (res.success) {
                     showMessage(wrapper.dataset.msgRegisterSuccess || 'ثبت نام با موفقیت انجام شد', 'success');
-                    const redirect = wrapper._state?.loginRedirect || res.data?.redirect || loginOtpData.redirect
+                    const redirect = getRedirectUrl(res.data);
                     setTimeout(() => window.location.href = redirect, 500);
                 } else {
                     showMessage(res.data?.message || wrapper.dataset.msgRegisterFailed || 'ثبت نام ناموفق بود', 'danger');
@@ -596,7 +605,7 @@
             .then(res => {
                 if (res.success) {
                     showMessage(wrapper.dataset.msgPasswordChanged || 'رمز عبور با موفقیت تغییر کرد', 'success');
-                    const redirect = wrapper._state?.loginRedirect || res.data?.redirect || loginOtpData.redirect
+                    const redirect = getRedirectUrl(res.data);
                     setTimeout(() => window.location.href = redirect, 2000);
                 } else {
                     showMessage(res.data?.message || wrapper.dataset.msgChangeFailed || 'تغییر رمز عبور ناموفق بود', 'danger');
@@ -678,6 +687,9 @@
     document.addEventListener('DOMContentLoaded', () => {
         const wrapper = document.querySelector('.login-otp-wrapper');  // Get wrapper on load
         if (wrapper) {
+            wrapper._state = wrapper._state || {};
+            // Prefer a server-provided return target (data-return-to), else use document.referrer when available
+            wrapper._state.returnTo = wrapper.dataset.returnTo || (document.referrer && document.referrer !== window.location.href ? document.referrer : null);
             showStep(wrapper, '1');  // Or your initial step, e.g., 'password'
         } else {
             console.error('Wrapper not found on load');

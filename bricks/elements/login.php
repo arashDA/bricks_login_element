@@ -1324,7 +1324,7 @@ public function render() {
 
 
         $site_url = home_url() ;
-        $this->set_attribute('goBackPage','onClick', 'window.history.back()');
+        $this->set_attribute('authBackLogo','onclick', 'window.history.back()');
 
 
 
@@ -1380,9 +1380,9 @@ public function render() {
         $this->set_attribute('_root', 'data-otp-length', esc_attr($this->settings['otp_length'] ?? $otp_length));
         echo "<div {$this->render_attributes('_root')}>";
         // Step 1: Phone (OTP Login)
-        echo "<div {$this->render_attributes('step')} data-role='step' data-step='1' style='display:none;'  >
+        echo "<div {$this->render_attributes('step')} data-role='step' data-step='1'>
                     <div {$this->render_attributes('mainHeader')}>
-                            <img {$this->render_attributes('authBackLogo', 'goBackPage')}  src='$back_logo_url' alt='Back Logo'>
+                            <img {$this->render_attributes('authBackLogo')}  src='$back_logo_url' alt='Back Logo'>
                             <a {$this->render_attributes('authSiteLogo')} href='$site_url'>
                                 <img  src='$site_logo_url' alt='Site Logo'>
                             </a>
@@ -1408,7 +1408,7 @@ public function render() {
                     </div>
                 </div>";
         // Step 1b: Phone + Password (Password Login)
-        echo "<div {$this->render_attributes('step')} data-role='step' data-step='password' >
+        echo "<div {$this->render_attributes('step')} data-role='step' data-step='password' style='display:none;' >
                 <div {$this->render_attributes('mainHeader')}>
                         <img data-role='switch-to-otp' {$this->render_attributes('authBackLogo')}  src='$back_logo_url' alt='Back Logo'>
                         <a {$this->render_attributes('authSiteLogo')} href='$site_url'>

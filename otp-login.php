@@ -675,7 +675,6 @@ add_action( 'wp_enqueue_scripts', function() {
         'iconSuccess' => $base_url . 'assets/img/successIcon.svg',
     ]);
 
-    wp_enqueue_script('login-otp-script');
 
 });
 

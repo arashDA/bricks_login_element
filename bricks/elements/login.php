@@ -1323,7 +1323,6 @@ public function render() {
         $this->set_attribute('authSiteLogo', 'class', 'auth-site-logo');
 
 
-        $site_url = home_url() ;
         $this->set_attribute('authBackLogo','onclick', 'window.history.back()');
 
 
@@ -1383,9 +1382,7 @@ public function render() {
         echo "<div {$this->render_attributes('step')} data-role='step' data-step='1'>
                     <div {$this->render_attributes('mainHeader')}>
                             <img {$this->render_attributes('authBackLogo')}  src='$back_logo_url' alt='Back Logo'>
-                            <a {$this->render_attributes('authSiteLogo')} href='$site_url'>
-                                <img  src='$site_logo_url' alt='Site Logo'>
-                            </a>
+                            <img {$this->render_attributes('authSiteLogo')}  src='$site_logo_url' alt='Site Logo'>
                     </div>
                     <div {$this->render_attributes('header')}>
                             <h2 {$this->render_attributes('title')} data-role='form-title'>{$login_title}</h2>
@@ -1411,9 +1408,7 @@ public function render() {
         echo "<div {$this->render_attributes('step')} data-role='step' data-step='password' style='display:none;' >
                 <div {$this->render_attributes('mainHeader')}>
                         <img data-role='switch-to-otp' {$this->render_attributes('authBackLogo')}  src='$back_logo_url' alt='Back Logo'>
-                        <a {$this->render_attributes('authSiteLogo')} href='$site_url'>
-                            <img  src='$site_logo_url' alt='Site Logo'>
-                        </a>
+                        <img {$this->render_attributes('authSiteLogo')}  src='$site_logo_url' alt='Site Logo'>
                 </div>
                 <div {$this->render_attributes('header')}>
                     <h2 {$this->render_attributes('title')} data-role='form-title'>{$login_password_title}</h2>
@@ -1478,10 +1473,7 @@ public function render() {
         echo "<div {$this->render_attributes('step')} data-role='step' data-step='2' style='display:none;'  >
                     <div {$this->render_attributes('mainHeader')}>
                             <img data-role='edit-number' {$this->render_attributes('authBackLogo')}  src='$back_logo_url' alt='Back Logo'>
-
-                            <a {$this->render_attributes('authSiteLogo')} href='$site_url'>
-                                <img  src='$site_logo_url' alt='Site Logo'>
-                            </a>
+                            <img {$this->render_attributes('authSiteLogo')}  src='$site_logo_url' alt='Site Logo'>
                     </div>
                     <div {$this->render_attributes('header')}>
                             <h2 {$this->render_attributes('title')} data-role='form-title'>{$login_OTP_title}</h2>
@@ -1514,10 +1506,7 @@ public function render() {
         <div {$this->render_attributes('step')} data-role='step' data-step='3' style='display:none;' >
                 <div {$this->render_attributes('mainHeader')}>
                         <img data-role='switch-to-otp'  {$this->render_attributes('authBackLogo')}  src='$back_logo_url' alt='Back Logo'>
-
-                        <a {$this->render_attributes('authSiteLogo')} href='$site_url'>
-                            <img  src='$site_logo_url' alt='Site Logo'>
-                        </a>
+                        <img {$this->render_attributes('authSiteLogo')}  src='$site_logo_url' alt='Site Logo'>
                 </div>
                 <div {$this->render_attributes('header')}>
                     <h2 {$this->render_attributes('title')} data-role='form-title'>{$set_password_title}</h2>
@@ -1569,10 +1558,7 @@ public function render() {
         echo "<div {$this->render_attributes('step')} data-step='forgot-1' style='display:none;'>
                 <div {$this->render_attributes('mainHeader')}>
                         <img data-role='switch-to-password' {$this->render_attributes('authBackLogo')}  src='$back_logo_url' alt='Back Logo'>
-
-                        <a {$this->render_attributes('authSiteLogo')} href='$site_url'>
-                            <img  src='$site_logo_url' alt='Site Logo'>
-                        </a>
+                        <img {$this->render_attributes('authSiteLogo')}  src='$site_logo_url' alt='Site Logo'>
                 </div>
                 <div {$this->render_attributes('header')}>
                         <h2 {$this->render_attributes('title')} data-role='form-title'>{$Forget_password_step1_title}</h2>
@@ -1594,10 +1580,7 @@ public function render() {
         echo "<div {$this->render_attributes('step')}  data-step='forgot-2' style='display:none;' >
                 <div {$this->render_attributes('mainHeader')}>
                         <img data-role='edit-number-forget' {$this->render_attributes('authBackLogo')}  src='$back_logo_url' alt='Back Logo'>
-
-                        <a {$this->render_attributes('authSiteLogo')} href='$site_url'>
-                            <img  src='$site_logo_url' alt='Site Logo'>
-                        </a>
+                        <img {$this->render_attributes('authSiteLogo')}  src='$site_logo_url' alt='Site Logo'>
                 </div>
                 <div {$this->render_attributes('header')}>
                         <h2 {$this->render_attributes('title')} data-role='form-title'>{$Forget_password_step2_title}</h2>
@@ -1622,10 +1605,7 @@ public function render() {
         echo "<div {$this->render_attributes('step')} data-step='forgot-3' style='display:none;' >
                 <div {$this->render_attributes('mainHeader')}>
                         <img data-role='edit-number-forget'  {$this->render_attributes('authBackLogo')}  src='$back_logo_url' alt='Back Logo'>
-
-                        <a {$this->render_attributes('authSiteLogo')} href='$site_url'>
-                            <img  src='$site_logo_url' alt='Site Logo'>
-                        </a>
+                        <img {$this->render_attributes('authSiteLogo')}  src='$site_logo_url' alt='Site Logo'>
                 </div>
                 <div {$this->render_attributes('header')}>
                         <h2 {$this->render_attributes('title')} data-role='form-title'>{$Forget_password_step3_title}</h2>

@@ -53,13 +53,16 @@
     }
 
 
-    // Regex for changing number
+    // Phone input: convert Persian digits, strip non-digits and normalize prefixes
     document.addEventListener('input', function (e) {
         const input = e.target;
-        // Only process phone inputs
         if (input.getAttribute('data-role') !== 'phone') return;
 
-        let value = input.value.trim();
+        // Preserve caret position where possible
+        const selStart = input.selectionStart;
+        const selEnd = input.selectionEnd;
+
+        let value = (input.value || '').trim();
 
         // Convert Persian digits to English
         const persianToEnglish = {
@@ -68,16 +71,60 @@
         };
         value = value.replace(/[۰-۹]/g, (digit) => persianToEnglish[digit]);
 
-        // Remove +98 if it starts with that
-        if (value.startsWith('+98')) {
-            value = value.replace(/^\+98/, '');
-        }
-        // Remove leading 0 if it starts with 09
-        else if (value.startsWith('09')) {
+        // Remove all non-digit characters (this enforces numeric-only input)
+        value = value.replace(/\D+/g, '');
+
+        // Normalize common country prefix patterns (optional)
+        if (value.startsWith('98')) {
+            // remove leading country code 98
+            value = value.replace(/^98/, '');
+        } else if (value.startsWith('09')) {
+            // remove leading 0 from local mobile
             value = value.replace(/^0/, '');
         }
 
         input.value = value;
+
+        // Try to restore caret near previous position
+        try {
+            const newPos = Math.min(value.length, selStart - (selEnd - selStart));
+            input.setSelectionRange(newPos, newPos);
+        } catch (err) {}
+    });
+
+    // Sanitize pasted content into phone inputs (strip letters, convert persian digits)
+    document.addEventListener('paste', function (e) {
+        const input = e.target;
+        if (!input || input.getAttribute('data-role') !== 'phone') return;
+        e.preventDefault();
+        const text = (e.clipboardData || window.clipboardData).getData('text') || '';
+        const persianToEnglish = {
+            '۰': '0', '۱': '1', '۲': '2', '۳': '3', '۴': '4',
+            '۵': '5', '۶': '6', '۷': '7', '۸': '8', '۹': '9'
+        };
+        const cleaned = text.replace(/[۰-۹]/g, (d) => persianToEnglish[d]).replace(/\D+/g, '');
+        const start = input.selectionStart || 0;
+        const end = input.selectionEnd || 0;
+        input.value = input.value.slice(0, start) + cleaned + input.value.slice(end);
+        const caret = start + cleaned.length;
+        input.setSelectionRange(caret, caret);
+    });
+
+    // Prevent typing non-digit characters into phone inputs (allow navigation and shortcuts)
+    document.addEventListener('keydown', function (e) {
+        const input = e.target;
+        if (!input || input.getAttribute('data-role') !== 'phone') return;
+
+        // Allow control/meta/alt combos (copy/paste/select all), navigation/edit keys
+        if (e.ctrlKey || e.metaKey || e.altKey) return;
+        const allowed = ['Backspace','Tab','Enter','ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Home','End','Delete'];
+        if (allowed.indexOf(e.key) !== -1) return;
+
+        // Allow number keys only (top row and numpad)
+        if (/^[0-9]$/.test(e.key)) return;
+
+        // Otherwise block the key
+        e.preventDefault();
     });
 
     document.addEventListener('click', function (e) {
@@ -217,6 +264,7 @@
         }
 
         if (role === 'edit-number') {
+            // showMessage();
             showStep(wrapper, '1');
             const phoneField = qs("[data-step='1'] [data-role='phone']", wrapper);
             if (phoneField) phoneField.focus();
@@ -226,7 +274,7 @@
 
         if (role === 'edit-number-forget') {
             showStep(wrapper, 'forgot-1');
-            showMessage()
+            // showMessage();
             const phoneField = qs("[data-step='forgot-1'] [data-role='phone']", wrapper);
             if (phoneField) phoneField.focus();
             if (otpInput) otpInput.value = '';
@@ -246,7 +294,6 @@
             if (!phone) { showMessage(wrapper.dataset.msgPhoneRequired || 'شماره موبایل خود را وارد کنید', 'danger'); phoneInput.focus(); return; }
             if (!password) { showMessage(wrapper.dataset.msgPasswordRequired || 'رمز عبور خود را وارد کنید', 'danger'); return; }
 
-            showMessage(wrapper.dataset.msgLoggingIn || 'در حال ورود...', 'notice');
 
             setButtonLoading(btn,true);
 
@@ -259,7 +306,7 @@
             .then(res => {
                 
                 if (res.success) {
-                    showMessage(wrapper.dataset.msgLoggedIn || 'ورود موفقیت امیز بود', 'success');
+                    showMessage(wrapper.dataset.msgLoggedIn || 'ورود شما با موفقیت انجام شد', 'success');
                         const redirect = getRedirectUrl(res.data);
                         setTimeout(() => window.location.href = redirect, 500);
                 } else {
@@ -279,7 +326,6 @@
             const phone = phoneInput.value.trim();
             if (!phone) { showMessage(wrapper.dataset.msgPhoneRequired || 'شماره موبایل خود را وارد کنید', 'danger'); phoneInput.focus(); return; }
 
-            showMessage(wrapper.dataset.msgSending || 'در حال ارسال کد تایید...', 'notice');
             setButtonLoading(btn,true);
 
             postData(loginOtpData.ajaxUrl, {
@@ -290,7 +336,6 @@
             .then(res => {
                 if (res.success) {
                     showStep(wrapper, '2');
-                    showMessage(wrapper.dataset.msgOtpSent || 'کد یکبار مصرف ارسال شد', 'success');
 
                     postData(loginOtpData.ajaxUrl, {
                         action: 'login_get_user_info',
@@ -312,12 +357,12 @@
 
                         const isRealEmail =
                             /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) &&
-                            !email.endsWith('@OtpPlugin.com');
+                            !email.endsWith('@gasht.com');
 
                         // Normalize response: treat fake email as empty
                         userRes.data.email = isRealEmail ? email : '';
 
-                        if (userRes.data.exists && userRes.data.email && emailDisplay && emailRow) {
+                        if (userRes.data.exists && userRes.data.email) {
                             emailDisplay.textContent = userRes.data.email;
                             emailRow.style.display = 'block';
                             msgBox.textContent = "کد تایید به شماره موبایل و ایمیل زیر ارسال شد";
@@ -341,7 +386,7 @@
                     }
                     startCountdown(null, '2');
                 } else {
-                    showMessage(res.data?.message || wrapper.dataset.msgFailedSend || 'ارسال کد تایید با خطا مواجه شد', 'danger');
+                    showMessage(wrapper.dataset.msgFailedSend || 'ارسال کد با خطا مواجه شد', 'danger');
                 }
             })
             .catch(() => showMessage(wrapper.dataset.msgNetworkError || 'خطایی در ارتباط با سرور رخ داده است.', 'danger'))
@@ -362,7 +407,6 @@
             
             if (!phone) { showMessage(wrapper.dataset.msgPhoneRequired || 'شماره موبایل خود را وارد کنید', 'danger'); return; }
 
-            showMessage(wrapper.dataset.msgResending || 'در حال ارسال مجدد کد...', 'notice');
 
             setButtonLoading(btn,true);
 
@@ -373,12 +417,11 @@
             })
             .then(res => {
                 if (res.success) {
-                    showMessage(wrapper.dataset.msgOtpResent || 'کد تایید مجدد ارسال شد', 'success');
                     startCountdown(null, stepName);
                     const newOtp = qs("[data-step='" + stepName + "'] [data-role='otp']", wrapper);
                     if (newOtp) newOtp.focus();
                 } else {
-                    showMessage(res.data?.message || wrapper.dataset.msgFailedSend || 'ارسال مجدد کد تایید با خطا مواجه شد', 'danger');
+                    showMessage(wrapper.dataset.msgFailedSend || 'ارسال مجدد کد با خطا مواجه شد', 'danger');
                 }
             })
             .catch(() => showMessage(wrapper.dataset.msgNetworkError || 'خطایی در ارتباط با سرور رخ داده است.', 'danger'))
@@ -412,7 +455,7 @@
 
                     // Existing user → login
                     if (res.data.status === 'logged_in') {
-                        showMessage(wrapper.dataset.msgLoggedIn || 'ورود موفقیت آمیز', 'success');
+                        showMessage(wrapper.dataset.msgLoggedIn || 'ورود شما با موفقیت انجام شد', 'success');
                         const redirect = getRedirectUrl(res.data);
                         setTimeout(() => window.location.href = redirect, 500);
                     }
@@ -424,11 +467,10 @@
                         wrapper._state.forgotPhone = phone; // Store phone for next step
                         wrapper._state.loginRedirect = res.data?.redirect; // Store redirect URL
                         showStep(wrapper, '3');
-                        showMessage(wrapper.dataset.msgNeedPassword || 'کد تایید شد. لطفاً رمز عبور خود را وارد کنید.', 'success');
                     }
 
                 } else {
-                    showMessage(res.data?.message || wrapper.dataset.msgInvalid || 'کد تایید نامعتبر یا منقضی شده است', 'danger');
+                    showMessage(wrapper.dataset.msgInvalid || 'کد تایید نامعتبر یا منقضی شده است', 'danger');
                     otpInput.focus();
                 }
             })
@@ -463,7 +505,6 @@
                 return;
             }
 
-            showMessage(wrapper.dataset.msgRegistering || 'در حال ثبت نام...', 'notice');
             setButtonLoading(btn,true);
             postData(loginOtpData.ajaxUrl, {
                 action: 'login_register_user',
@@ -474,11 +515,11 @@
             .then(res => {
                 setButtonLoading(btn,false);
                 if (res.success) {
-                    showMessage(wrapper.dataset.msgRegisterSuccess || 'ثبت نام با موفقیت انجام شد', 'success');
+                    showMessage(wrapper.dataset.msgRegisterSuccess || 'ثبت نام شما با موفقیت انجام شد', 'success');
                     const redirect = getRedirectUrl(res.data);
                     setTimeout(() => window.location.href = redirect, 500);
                 } else {
-                    showMessage(res.data?.message || wrapper.dataset.msgRegisterFailed || 'ثبت نام ناموفق بود', 'danger');
+                    showMessage(wrapper.dataset.msgRegisterFailed || 'ثبت نام ناموفق بود', 'danger');
                 }
             })
             .catch(() => showMessage(wrapper.dataset.msgNetworkError || 'خطایی در ارتباط با سرور رخ داده است.', 'danger'))
@@ -503,7 +544,6 @@
             if (!phone) { showMessage(wrapper.dataset.msgPhoneRequired || 'لطفاً شماره تلفن خود را وارد کنید', 'danger'); if (phoneField) phoneField.focus(); return; }
 
             // First check whether the phone exists to avoid sending OTP to unknown numbers
-            showMessage(wrapper.dataset.msgSending || 'در حال بررسی شماره تلفن...', 'notice');
             setButtonLoading(btn,true);
 
             postData(loginOtpData.ajaxUrl, {
@@ -514,13 +554,12 @@
             .then(checkRes => {
                 setButtonLoading(btn,false);
                 if (!checkRes.success) {
-                    showMessage(checkRes.data?.message || wrapper.dataset.msgFailedSend || 'حسابی با این شماره یافت نشد', 'danger');
+                    showMessage(wrapper.dataset.msgFailedSend || 'حسابی با این شماره یافت نشد', 'danger');
                     if (phoneField) phoneField.focus();
                     return;
                 }
 
                 // Phone exists — send OTP
-                showMessage(wrapper.dataset.msgSending || 'در حال ارسال کد تایید...', 'notice');
                 return postData(loginOtpData.ajaxUrl, {
                     action: 'login_send_otp_forgot',
                     phone: phone,
@@ -533,12 +572,11 @@
                         wrapper._state.forgotPhone = phone;
 
                         showStep(wrapper, 'forgot-2');
-                        showMessage(wrapper.dataset.msgForgotOtpSent || 'کد تایید ارسال شد', 'success');
                         const otpField = qs("[data-step='forgot-2'] [data-role='otp']", wrapper);
                         if (otpField) otpField.focus();
                         startCountdown(null, 'forgot-2');
                     } else {
-                        showMessage(res.data?.message || wrapper.dataset.msgFailedSend || 'ارسال کد تایید ناموفق بود', 'danger');
+                        showMessage(wrapper.dataset.msgFailedSend || 'ارسال کد تایید ناموفق بود', 'danger');
                     }
                 });
             })
@@ -561,7 +599,6 @@
                 return;
             }
 
-            showMessage(wrapper.dataset.msgVerifying || 'در حال بررسی کد تایید...', 'notice');
             setButtonLoading(btn,true);
             postData(loginOtpData.ajaxUrl, {
                 action: 'login_forgot_verify_otp',
@@ -573,9 +610,8 @@
                 if (res.success && res.data.status === 'reset_password') {
                     wrapper._state.forgotPhone = phone; // Store phone for password reset
                     showStep(wrapper, 'forgot-3');
-                    showMessage(wrapper.dataset.msgForgotVerified || 'کد تایید شد. رمز عبور جدید را وارد کنید.', 'success');
                 } else {
-                    showMessage(res.data?.message || wrapper.dataset.msgInvalid || 'کد تایید نامعتبر است', 'danger');
+                    showMessage(wrapper.dataset.msgInvalid || 'کد تایید نامعتبر است', 'danger');
                 }
             })
             .catch(() => showMessage(wrapper.dataset.msgNetworkError || 'خطایی در ارتباط با سرور رخ داده است.', 'danger'))
@@ -593,7 +629,6 @@
 
             if (password.length < 8) { showMessage('رمز عبور باید حداقل 8 کاراکتر باشد', 'danger'); return; }
 
-            showMessage(wrapper.dataset.msgRegistering || 'در حال تغییر رمز عبور...', 'notice');
             setButtonLoading(btn,true);
 
             postData(loginOtpData.ajaxUrl, {
@@ -604,11 +639,11 @@
             })
             .then(res => {
                 if (res.success) {
-                    showMessage(wrapper.dataset.msgPasswordChanged || 'رمز عبور با موفقیت تغییر کرد', 'success');
+                    showMessage(wrapper.dataset.msgPasswordChanged || 'رمز عبور شما با موفقیت تغییر کرد', 'success');
                     const redirect = getRedirectUrl(res.data);
                     setTimeout(() => window.location.href = redirect, 2000);
                 } else {
-                    showMessage(res.data?.message || wrapper.dataset.msgChangeFailed || 'تغییر رمز عبور ناموفق بود', 'danger');
+                    showMessage(wrapper.dataset.msgChangeFailed || 'تغییر رمز عبور ناموفق بود', 'danger');
                 }
             })
             .catch(() => showMessage(wrapper.dataset.msgNetworkError || 'خطایی در ارتباط با سرور رخ داده است.', 'danger'))
@@ -664,6 +699,49 @@
                 }
             }
         });
+
+    // Trigger primary action when user presses Enter inside the widget
+    document.addEventListener('keydown', function (e) {
+        if (e.key !== 'Enter') return;
+        const active = document.activeElement;
+        if (!active) return;
+        if (active.tagName === 'TEXTAREA') return;
+
+        const wrapper = active.closest('.login-otp-wrapper');
+        if (!wrapper) return;
+
+        // Find the visible step inside this wrapper
+        const steps = wrapper.querySelectorAll('[data-step]');
+        let visibleStep = null;
+        for (let i = 0; i < steps.length; i++) {
+            const s = steps[i];
+            const cs = window.getComputedStyle(s);
+            if (cs && cs.display !== 'none') { visibleStep = s; break; }
+        }
+        if (!visibleStep) visibleStep = wrapper;
+
+        // Preferred role order to trigger for Enter
+        const roleOrder = [
+            'verify',        // OTP verify
+            'send',          // send OTP (initial phone)
+            'login-password',// login with password
+            'register',      // register (set password)
+            'send-forgot',   // forgot step 1
+            'verify-forgot', // forgot OTP verify
+            'reset-password' // forgot reset
+        ];
+
+        for (let i = 0; i < roleOrder.length; i++) {
+            const roleName = roleOrder[i];
+            // Only trigger buttons that exist inside the visible step (no fallback to other steps)
+            const btn = visibleStep.querySelector("[data-role='" + roleName + "']");
+            if (btn && typeof btn.click === 'function' && !btn.disabled) {
+                e.preventDefault();
+                btn.click();
+                return;
+            }
+        }
+    });
 
 
         document.addEventListener('click', function (e) {

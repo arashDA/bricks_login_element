@@ -117,6 +117,41 @@ function login_normalize_phone($phone){
     return $phone;
 }
 
+/**
+ * Lookup users by phone meta (supports both '0' prefixed and 10-digit)
+ * or by user_login (username). Returns array of WP_User or empty array.
+ */
+function login_get_user_by_phone_or_username($input){
+    // Accept username or phone-like input
+    $norm = login_normalize_phone($input);
+
+    // try meta stored as plain 10-digit
+    $users = get_users([
+        'meta_key'   => 'phone',
+        'meta_value' => $norm,
+        'number'     => 1
+    ]);
+    if (!empty($users)) return $users;
+
+    // try meta stored with leading zero (admin saved format)
+    $users = get_users([
+        'meta_key'   => 'phone',
+        'meta_value' => '0' . $norm,
+        'number'     => 1
+    ]);
+    if (!empty($users)) return $users;
+
+    // try user_login variants: raw input, normalized, leading zero
+    $candidates = [ $input, $norm, '0' . $norm ];
+    foreach ($candidates as $cand) {
+        if (!$cand) continue;
+        $u = get_user_by('login', $cand);
+        if ($u) return [ $u ];
+    }
+
+    return [];
+}
+
 
 /*========================================================
   3. login SMS Sender
@@ -229,18 +264,14 @@ function login_send_otp($input, $username, $password, $template_id){
     /*-----------------------------------------
      * If user exists AND has email → send email OTP too (async)
      *----------------------------------------*/
-    $users = get_users([
-        'meta_key'   => 'phone',
-        'meta_value' => $phone,
-        'number'     => 1
-    ]);
+    $users = login_get_user_by_phone_or_username($phone);
 
     if (!empty($users)) {
         $user = $users[0];
         $email = $user->user_email;
 
-        if (login_is_real_email($email)) {
-            wp_schedule_single_event(time(), 'login_send_email_otp_async', [$email, $otp]);
+        if ($email) {
+            do_action( 'login_send_email_otp_async', $email, $otp );
         }
 
     }
@@ -324,11 +355,7 @@ function login_ajax_get_user_info(){
 
     $norm = login_normalize_phone($phone);
 
-    $users = get_users([
-        'meta_key'   => 'phone',
-        'meta_value' => $norm,
-        'number'     => 1
-    ]);
+    $users = login_get_user_by_phone_or_username($norm);
 
     // If user exists, return their info
     if (!empty($users)) {
@@ -361,11 +388,7 @@ function login_ajax_check_phone(){
 
     $norm = login_normalize_phone($phone);
 
-    $users = get_users([
-        'meta_key'   => 'phone',
-        'meta_value' => $norm,
-        'number'     => 1
-    ]);
+    $users = login_get_user_by_phone_or_username($norm);
 
     if (empty($users)) {
         wp_send_json_error(['message'=>'Invalid user']);
@@ -389,11 +412,7 @@ function login_ajax_send_otp_forgot(){
     $norm = login_normalize_phone($phone);
 
     // Check if user exists for this phone
-    $users = get_users([
-        'meta_key'   => 'phone',
-        'meta_value' => $norm,
-        'number'     => 1
-    ]);
+    $users = login_get_user_by_phone_or_username($norm);
 
     if (empty($users)) {
         wp_send_json_error(['message'=>'No account found with this phone number']);
@@ -436,11 +455,7 @@ function login_ajax_verify_otp(){
     }
 
     // Check if user exists
-    $users = get_users([
-        'meta_key'   => 'phone',
-        'meta_value' => login_normalize_phone($phone),
-        'number'     => 1
-    ]);
+    $users = login_get_user_by_phone_or_username(login_normalize_phone($phone));
 
     if (!empty($users)) {
         // User exists → login
@@ -471,7 +486,7 @@ function login_ajax_register_user(){
     check_ajax_referer('login_otp_nonce');
 
     $phone    = sanitize_text_field($_POST['phone'] ?? '');
-    $password = $_POST['password'] ?? ''; 
+    $password = $_POST['password'] ?? '';
 
     if (!$phone || !$password) {
         wp_send_json_error(['message'=>'Phone and password required']);
@@ -479,26 +494,51 @@ function login_ajax_register_user(){
 
     $phone = login_normalize_phone($phone);
 
-    // Create user
-    $username = $phone;
-    $email    = $phone . '@OtpPlugin.com';
+    // Build a temporary email required by WP at creation time
+    $temp_email = $phone . '@otpPlugin.com';
 
-    $user_id = wp_create_user($username, $password, $email);
+    // Create user with a system-generated password (or use $password if you prefer)
+    $user_data = [
+        'user_login' => $phone,
+        'user_pass'  => wp_generate_password(), // system fake password
+        'user_email' => $temp_email,
+    ];
+
+    $user_id = wp_insert_user($user_data);
 
     if (is_wp_error($user_id)) {
-        wp_send_json_error(['message'=>$user_id->get_error_message()]);
+        wp_send_json_error(['message' => $user_id->get_error_message()]);
     }
 
-    error_log('User created with ID: ' . $user_id);
+    // Now we can set the real password the user provided (optional)
+    wp_set_password($password, $user_id);
 
+    // Persist phone meta
     update_user_meta($user_id, 'phone', $phone);
 
+    // Mark mobile_verified if transient exists (as implemented earlier)
+    $norm = login_normalize_phone($phone);
+    if (get_transient('otp_verified_' . $norm)) {
+        update_user_meta($user_id, 'mobile_verified', 1);
+        delete_transient('otp_verified_' . $norm);
+    } else {
+        update_user_meta($user_id, 'mobile_verified', 0);
+    }
+
+    // Replace the stored email with an empty value (or a random placeholder)
+    // Use empty string to hide everywhere; or use a non-unique placeholder:
+    wp_update_user([
+        'ID'         => $user_id,
+        'user_email' => ''
+    ]);
+
+    // Log in the user
     wp_set_current_user($user_id);
     wp_set_auth_cookie($user_id);
 
     wp_send_json_success([
-        'message' => 'Registered and logged in',
-        'status'  => 'registered',
+        'message'  => 'Registered and logged in',
+        'status'   => 'registered',
         'redirect' => esc_url(isset($_COOKIE['otp_prev_page']) ? $_COOKIE['otp_prev_page'] : home_url('/'))
     ]);
 }
@@ -520,11 +560,7 @@ function login_ajax_verify_password(){
     $phone = login_normalize_phone($phone);
 
     // Get user by phone
-    $users = get_users([
-        'meta_key'   => 'phone',
-        'meta_value' => $phone,
-        'number'     => 1
-    ]);
+    $users = login_get_user_by_phone_or_username($phone);
 
     if (empty($users)) {
         wp_send_json_error(['message'=>'Invalid password or phone number']);
@@ -604,11 +640,7 @@ function login_ajax_reset_password(){
 
     $phone = login_normalize_phone($phone);
 
-    $users = get_users([
-        'meta_key'   => 'phone',
-        'meta_value' => $phone,
-        'number'     => 1
-    ]);
+    $users = login_get_user_by_phone_or_username($phone);
 
     if (empty($users)) {
         wp_send_json_error(['message'=>'User not found']);
@@ -713,20 +745,145 @@ add_action('admin_init', function () {
     register_setting('otp_login_settings', 'otp_login_template_id');
 });
 
+/*========================================================
+  8. User profile: add phone contact method and save handler
+========================================================*/
+// Add `phone` to Contact Info in user profile
+add_filter('user_contactmethods', function($methods){
+    $methods['phone'] = __('شماره موبایل','otp-login');
+    return $methods;
+});
 
-// Email Helper
-function login_is_real_email($email) {
-    if (!$email || !is_email($email)) {
-        return false;
-    }
+// Save phone when profile is updated (both frontend and admin)
+add_action('personal_options_update', 'otp_save_user_phone');
+add_action('edit_user_profile_update', 'otp_save_user_phone');
 
-    // Block auto-generated emails
-    if (str_ends_with($email, '@OtpPlugin.com')) {
-        return false;
+function otp_save_user_phone($user_id){
+    if (!current_user_can('edit_user', $user_id)) return false;
+
+    if (!isset($_POST['phone'])) return false;
+
+    $phone = sanitize_text_field($_POST['phone']);
+    // Normalize and store as 10-digit local number (same format used elsewhere)
+    $phone = login_normalize_phone($phone);
+
+    if (empty($phone)) {
+        delete_user_meta($user_id, 'phone');
+    } else {
+        update_user_meta($user_id, 'phone', '0' . $phone);
     }
 
     return true;
 }
+
+// Ensure phone input in user profile shows with a leading zero
+add_action('show_user_profile', 'otp_ensure_phone_shows_zero');
+add_action('edit_user_profile', 'otp_ensure_phone_shows_zero');
+function otp_ensure_phone_shows_zero($user){
+    ?>
+    <script>
+    (function(){
+        document.addEventListener('DOMContentLoaded', function(){
+            var el = document.querySelector('input[name="phone"]');
+            if (!el) return;
+
+            var raw = (el.value || '').toString();
+            // keep only digits
+            var digits = raw.replace(/\D/g, '');
+
+            // If we have 10 digits (e.g. 9123456789) prepend a 0
+            if (digits.length === 10 && digits.charAt(0) !== '0') {
+                el.value = '0' + digits;
+                return;
+            }
+
+            // If it's 11 digits but missing leading 0 (unlikely), ensure proper formatting
+            if (digits.length === 11 && digits.charAt(0) !== '0') {
+                el.value = '0' + digits.slice(-10);
+                return;
+            }
+
+            // Otherwise leave the value as-is (covers already-correct values or empty)
+        });
+    })();
+    </script>
+    <?php
+}
+
+
+
+/*========================================================
+  9. Bricks Dynamic tag (Phone number)
+   - This can be used to display the user's phone number in the builder
+========================================================*/
+add_filter( 'bricks/dynamic_tags_list', 'myplugin_add_user_phone_tag' );
+function myplugin_add_user_phone_tag( $tags ) {
+
+  $tags[] = [
+    'name'  => '{my_user_phone}',
+    'label' => 'Current User Phone',
+    'group' => 'My Plugin',
+  ];
+
+  return $tags;
+}
+
+add_filter( 'bricks/dynamic_data/render_tag', 'myplugin_render_user_phone_tag', 20, 3 );
+function myplugin_render_user_phone_tag( $tag, $post, $context = 'text' ) {
+
+  if ( ! is_string( $tag ) ) {
+    return $tag;
+  }
+
+  $clean_tag = str_replace( ['{','}'], '', $tag );
+
+  if ( $clean_tag !== 'my_user_phone' ) {
+    return $tag;
+  }
+
+  return myplugin_get_user_phone();
+}
+
+function myplugin_get_user_phone() {
+
+  $user = wp_get_current_user();
+
+  if ( ! $user || ! $user->ID ) {
+    return '';
+  }
+
+  $phone = get_user_meta( $user->ID, 'phone', true );
+
+  if ( empty( $phone ) ) {
+    return '';
+  }
+
+  // Ensure string
+  $phone = (string) $phone;
+
+  // Add leading zero if missing
+  if ( $phone[0] !== '0' ) {
+    $phone = '0' . $phone;
+  }
+
+  return esc_html( $phone );
+}
+
+
+add_filter( 'bricks/dynamic_data/render_content', 'myplugin_render_user_phone_content', 20, 3 );
+add_filter( 'bricks/frontend/render_data', 'myplugin_render_user_phone_content', 20, 2 );
+
+function myplugin_render_user_phone_content( $content, $post, $context = 'text' ) {
+
+  if ( strpos( $content, '{my_user_phone}' ) === false ) {
+    return $content;
+  }
+
+  return str_replace( '{my_user_phone}', myplugin_get_user_phone(), $content );
+}
+
+
+
 
 
 function otp_login_settings_page() {

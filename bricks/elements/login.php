@@ -1601,7 +1601,7 @@ public function render() {
                     </div>
                     <div {$this->render_attributes('message')} data-role='message'></div>
                 </div>
-                <button {$this->render_attributes('forgot_btn')} data-role='verify-forgot' disabled>
+                <button {$this->render_attributes('otp_btn_verify')} data-role='verify-forgot' disabled>
                     <span class='btn-text' >{$Forget_password_step2_button_title}</span>
                     <span class='btn-spinner'></span>
                 </button>

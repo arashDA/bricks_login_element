@@ -335,7 +335,6 @@
             })
             .then(res => {
                 if (res.success) {
-                    showStep(wrapper, '2');
 
                     postData(loginOtpData.ajaxUrl, {
                         action: 'login_get_user_info',
@@ -357,14 +356,14 @@
 
                         const isRealEmail =
                             /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) &&
-                            !email.endsWith('@gasht.com');
+                            !email.endsWith('@otpPlugin.com');
 
                         // Normalize response: treat fake email as empty
                         userRes.data.email = isRealEmail ? email : '';
 
+
                         if (userRes.data.exists && userRes.data.email) {
                             emailDisplay.textContent = userRes.data.email;
-                            emailRow.style.display = 'block';
                             msgBox.textContent = "کد تایید به شماره موبایل و ایمیل زیر ارسال شد";
                         } else {
                             if (emailRow) emailRow.style.display = 'none';
@@ -372,9 +371,6 @@
                         }
                     })
                     .catch(() => {})
-                    .finally(() => {
-                            setButtonLoading(btn, false);
-                    });
 
 
                     // Focus on OTP input with keyboard activation
@@ -385,6 +381,8 @@
                         setTimeout(() => { newOtp.style.fontSize = ''; }, 0);
                     }
                     startCountdown(null, '2');
+                    showStep(wrapper, '2');
+                    setButtonLoading(btn, false);
                 } else {
                     showMessage(wrapper.dataset.msgFailedSend || 'ارسال کد با خطا مواجه شد', 'danger');
                 }
@@ -552,7 +550,7 @@
                 _ajax_nonce: loginOtpData.nonce
             })
             .then(checkRes => {
-                setButtonLoading(btn,false);
+                // setButtonLoading(btn,false);
                 if (!checkRes.success) {
                     showMessage(wrapper.dataset.msgFailedSend || 'حسابی با این شماره یافت نشد', 'danger');
                     if (phoneField) phoneField.focus();
@@ -570,6 +568,32 @@
                         // remember phone for the forgot flow so verify/reset can use it
                         wrapper._state = wrapper._state || {};
                         wrapper._state.forgotPhone = phone;
+
+                        const email = res?.data?.email || '';
+
+                        // Display phone number
+                        const phoneDisplay = qs("[data-step='forgot-2'] [data-role='display-phone']", wrapper);
+                        if (phoneDisplay) phoneDisplay.textContent = res.data.phone;
+
+                        const emailDisplay = qs("[data-step='forgot-2'] [data-role='display-email']", wrapper);
+                        const emailRow = qs("[data-step='forgot-2'] [data-info='email-row']", wrapper);
+                        const msgBox = qs("[data-step='forgot-2'] [data-role='user-message']", wrapper);
+
+                        const isRealEmail =
+                            /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) &&
+                            !email.endsWith('@otpPlugin.com');
+
+                        // Normalize response: treat fake email as empty
+                        res.data.email = isRealEmail ? email : '';
+
+
+                        if (res.data.email) {
+                            emailDisplay.textContent = res.data.email;
+                            msgBox.textContent = "کد تایید به شماره موبایل و ایمیل زیر ارسال شد";
+                        } else {
+                            if (emailRow) emailRow.style.display = 'none';
+                            msgBox.textContent = "کد تایید به شماره موبایل زیر ارسال شد";
+                        }
 
                         showStep(wrapper, 'forgot-2');
                         const otpField = qs("[data-step='forgot-2'] [data-role='otp']", wrapper);

@@ -407,7 +407,7 @@ function login_ajax_send_otp_forgot(){
 
     $phone = sanitize_text_field($_POST['phone'] ?? '');
 
-    if (!$phone) wp_send_json_error(['message'=>'شماره تلفن لازم است']);
+    if (!$phone) wp_send_json_error(['message'=>'Phone number is required ']);
 
     $norm = login_normalize_phone($phone);
 
@@ -424,7 +424,7 @@ function login_ajax_send_otp_forgot(){
     $template = get_option('otp_login_template_id');
 
     if (!$username || !$password || !$template) {
-        wp_send_json_error(['message'=>'نام کاربری، رمزعبور و قالب پیامک در تنظیمات تعریف نشده است']);
+        wp_send_json_error(['message'=>'username,password and sms template didnt implement in settings']);
     }
 
     $res = login_send_otp($phone, $username, $password, $template);
@@ -433,7 +433,16 @@ function login_ajax_send_otp_forgot(){
         wp_send_json_error(['message'=>$res->get_error_message()]);
     }
 
-    wp_send_json_success([ 'message' => 'کد تایید ارسال شد' ]);
+
+
+    if (!empty($users)) {
+        $user = $users[0];
+        wp_send_json_success([
+            'message' => 'Otp code send',
+            'email'  => $user->user_email,
+            'phone'  => $norm
+        ]);
+    }
 }
 
 
@@ -606,12 +615,8 @@ function login_ajax_forgot_verify_otp(){
         wp_send_json_error(['message'=>'Invalid or expired OTP']);
     }
 
-    // Check if user exists
-    $users = get_users([
-        'meta_key'   => 'phone',
-        'meta_value' => login_normalize_phone($phone),
-        'number'     => 1
-    ]);
+    // Check if user exists (use helper which handles multiple stored formats)
+    $users = login_get_user_by_phone_or_username($phone);
 
     if (empty($users)) {
         wp_send_json_error(['message'=>'No account found with this phone number']);

@@ -1584,7 +1584,11 @@ public function render() {
                 </div>
                 <div {$this->render_attributes('header')}>
                         <h2 {$this->render_attributes('title')} data-role='form-title'>{$Forget_password_step2_title}</h2>
-                        <p {$this->render_attributes('subtitle')} data-role='form-subtitle'>{$Forget_password_step2_subTitle}</p>
+                        <div {$this->render_attributes('subtitle')}>
+                            <p data-role='user-message'></p>
+                            <p data-role='display-phone'></p>
+                            <p data-role='display-email'></p>
+                        </div>
                 </div>
                 <div>
                     <p {$this->render_attributes('edit_number')} data-role='edit-number-forget' cursor-pointer = true>{$login_OTP_EditNumber}</p>

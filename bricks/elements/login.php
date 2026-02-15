@@ -579,145 +579,6 @@ public function set_controls() {
         'default'=> 'ارسال کد OTP'
     ];
 
-    /*-------------------------
-     * STYLE: INPUTS
-     *-------------------------*/
-    $this->controls['inputBackground'] = [
-        'tab'   => 'style',
-        'group' => 'style_inputs',
-        'label' => esc_html__('Background', 'bricks'),
-        'type'  => 'color',
-        'css'   => [
-            ['property' => 'background-color', 'selector' => '.login-input'],
-        ],
-    ];
-
-    $this->controls['inputText'] = [
-        'tab'   => 'style',
-        'group' => 'style_inputs',
-        'label' => esc_html__('Text Color', 'bricks'),
-        'type'  => 'color',
-        'css'   => [
-            ['property' => 'color', 'selector' => '.login-input'],
-        ],
-    ];
-
-    $this->controls['inputBorder'] = [
-        'tab'   => 'style',
-        'group' => 'style_inputs',
-        'label' => esc_html__('Border', 'bricks'),
-        'type'  => 'border',
-        'css'   => [
-            ['property' => 'border', 'selector' => '.login-input'],
-        ],
-    ];
-
-    $this->controls['inputTypography'] = [
-        'tab'   => 'style',
-        'group' => 'style_inputs',
-        'label' => esc_html__('Typography', 'bricks'),
-        'type'  => 'typography',
-        'css'   => [
-            ['property' => 'font', 'selector' => '.login-input'],
-        ],
-    ];
-
-    $this->controls['inputPadding'] = [
-        'tab'   => 'style',
-        'group' => 'style_inputs',
-        'label' => esc_html__('Padding', 'bricks'),
-        'type'  => 'dimensions',
-        'css'   => [
-            ['property' => 'padding', 'selector' => '.login-input'],
-        ],
-    ];
-
-    $this->controls['inputMargin'] = [
-        'tab'   => 'style',
-        'group' => 'style_inputs',
-        'label' => esc_html__('Margin', 'bricks'),
-        'type'  => 'dimensions',
-        'css'   => [
-            ['property' => 'margin', 'selector' => '.login-input'],
-        ], 
-    ];
-
-
-    /*-------------------------
-     * STYLE: LABELS
-     *-------------------------*/
-    $this->controls['labelColor'] = [
-        'tab'   => 'style',
-        'group' => 'style_labels',
-        'label' => esc_html__('Text Color', 'bricks'),
-        'type'  => 'color',
-        'css'   => [
-            ['property' => 'color', 'selector' => '.login-label'],
-        ],
-    ];
-
-    $this->controls['labelTypography'] = [
-        'tab'   => 'style',
-        'group' => 'style_labels',
-        'label' => esc_html__('Typography', 'bricks'),
-        'type'  => 'typography',
-        'css'   => [
-            ['property' => 'font', 'selector' => '.login-label'],
-        ],
-    ];
-
-    $this->controls['labelSpacing'] = [
-        'tab'   => 'style',
-        'group' => 'style_labels',
-        'label' => esc_html__('Margin', 'bricks'),
-        'type'  => 'dimensions',
-        'css'   => [
-            ['property' => 'margin', 'selector' => '.login-label'],
-        ],
-    ];
-
-    /*-------------------------
-     * STYLE: RESEND LINK
-     *-------------------------*/
-    $this->controls['resendColor'] = [
-        'tab'   => 'style',
-        'group' => 'style_resend',
-        'label' => esc_html__('Background Color', 'bricks'),
-        'type'  => 'color',
-        'css'   => [
-            ['property' => 'background-color', 'selector' => '.resend-otp'],
-        ],
-    ];
-
-    $this->controls['resendTypography'] = [
-        'tab'   => 'style',
-        'group' => 'style_resend',
-        'label' => esc_html__('Resend Typography', 'bricks'),
-        'type'  => 'typography',
-        'css'   => [
-            ['property' => 'font', 'selector' => '.resend-otp'],
-        ],
-    ];
-
-    $this->controls['resendPadding'] = [
-        'tab'   => 'style',
-        'group' => 'style_resend',
-        'label' => esc_html__('Resend Padding', 'bricks'),
-        'type'  => 'dimensions',
-        'css'   => [
-            ['property' => 'padding', 'selector' => '.resend-otp'],
-        ],
-    ];
-
-    $this->controls['resendMargin'] = [
-        'tab'   => 'style',
-        'group' => 'style_resend',
-        'label' => esc_html__('Resend Margin', 'bricks'),
-        'type'  => 'dimensions',
-        'css'   => [
-            ['property' => 'margin', 'selector' => '.resend-otp'],
-        ],
-    ];
 
     //login with password
 
@@ -1003,11 +864,24 @@ private function generate_step_controls() {
             'group'    => 'style_forgot_input',
             'selector' => '.login-input-forgot',
             'controls' => ['background', 'border', 'padding', 'width', 'margin']
-        ]
+        ],
+        'baseInput' => [
+            'title'    => 'Base Input',
+            'group'    => 'style_inputs',
+            'selector' => '.login-input',
+            'controls' => ['background', 'border', 'padding', 'width', 'margin', 'typography']
+        ],
+
     ];
 
     // Label configurations for each step
     $label_steps = [
+        'baseLabel' => [
+            'title'    => 'Base Label',
+            'group'    => 'style_labels',
+            'selector' => '.login-label',
+            'controls' => ['margin', 'typography', 'background', 'padding', 'border', 'width','height']
+        ],
         'login' => [
             'title'    => 'Login Label',
             'group'    => 'style_login_label',
@@ -1050,7 +924,13 @@ private function generate_step_controls() {
             'group'    => 'style_login_password_error',
             'selector' => '.login-password-error',
             'controls' => ['typography', 'margin','padding','border','width','background']
-        ]
+        ],
+        'resendLink'=> [
+            'title'    => 'Resend Link',
+            'group'    => 'style_resend',
+            'selector' => '.resend-otp',
+            'controls' => ['typography', 'margin','padding','border','width','background']
+        ],
 
     ];
 

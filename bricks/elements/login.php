@@ -17,771 +17,257 @@ class Wcoq_login_OTP extends \Bricks\Element {
  * CONTROL GROUPS
  *--------------------------------------------*/
 public function set_control_groups() {
-    $this->control_groups['Login_labels'] = [
-        'title' => esc_html__('Login', 'bricks'),
-        'tab'   => 'content',
+
+    /**
+     * -------------------------------------
+     * Content Tab Groups
+     * -------------------------------------
+     */
+    $content_groups = [
+        'Login_labels'          => 'Login',
+        'LoginPassword_labels'  => 'Login with password',
+        'LoginOTP_labels'       => 'Login with OTP',
+        'SetPassword_labels'    => 'Set password page',
+        'ForgetPassword_labels' => 'Forgot password page',
+        'backLogo'              => 'Icon Back',
+        'siteLogo'              => 'Site Logo',
     ];
 
-    $this->control_groups['LoginPassword_labels'] = [
-        'title' => esc_html__('Login with password', 'bricks'),
-        'tab'   => 'content',
-    ];
-
-    $this->control_groups['LoginOTP_labels'] = [
-        'title' => esc_html__('Login with OTP', 'bricks'),
-        'tab'   => 'content',
-    ];
-
-    $this->control_groups['SetPassword_labels'] = [
-        'title' => esc_html__('Set password page', 'bricks'),
-        'tab'   => 'content',
-    ];
-
-    $this->control_groups['ForgetPassword_labels'] = [
-        'title' => esc_html__('Forgot password page', 'bricks'),
-        'tab'   => 'content',
-    ];
-
-    $this->control_groups['style_inputs'] = [
-        'title' => esc_html__('Inputs', 'bricks'),
-        'tab'   => 'style',
-    ];
-
-    $this->control_groups['style_buttons'] = [
-        'title' => esc_html__('Buttons', 'bricks'),
-        'tab'   => 'style',
-    ];
-
-    $this->control_groups['style_labels'] = [
-        'title' => esc_html__('Labels', 'bricks'),
-        'tab'   => 'style',
-    ];
-
-    $this->control_groups['style_resend'] = [
-        'title' => esc_html__('Resend Link', 'bricks'),
-        'tab'   => 'style',
-    ];
-
-    $this->control_groups['style_message'] = [
-        'title' => esc_html__('Message Text', 'bricks'),
-        'tab'   => 'style',
-    ];
-
-    $this->control_groups['style_title'] = [
-        'title' => esc_html__('Title', 'bricks'),
-        'tab' => 'style',
-    ];
-
-    $this->control_groups['style_subtitle'] = [
-        'title' => esc_html__('Subtitle', 'bricks'),
-        'tab' => 'style',
-    ];
-
-    $this->control_groups['style_loginWithPassword'] = [
-        'title' => esc_html__('Login With Password', 'bricks'),
-        'tab' => 'style',
-    ];
-
-    // Added missing groups
-    $this->control_groups['typography'] = [
-        'title' => esc_html__('Typography', 'bricks'),
-        'tab' => 'style',
-    ];
-
-    $this->control_groups['background'] = [
-        'title' => esc_html__('Background', 'bricks'),
-        'tab' => 'style',
-    ];
-
-    // Step-specific button style groups
-    $this->control_groups['style_login_button'] = [
-        'title' => esc_html__('Login Button', 'bricks'),
-        'tab'   => 'style',
-    ];
-
-    $this->control_groups['style_password_button'] = [
-        'title' => esc_html__('Password Button', 'bricks'),
-        'tab'   => 'style',
-    ];
-
-    $this->control_groups['style_otp_button'] = [
-        'title' => esc_html__('OTP Button', 'bricks'),
-        'tab'   => 'style',
-    ];
-
-    $this->control_groups['style_setpassword_button'] = [
-        'title' => esc_html__('Set Password Button', 'bricks'),
-        'tab'   => 'style',
-    ];
-
-    $this->control_groups['style_forgot_button'] = [
-        'title' => esc_html__('Forgot Password Button', 'bricks'),
-        'tab'   => 'style',
-    ];
-
-    // Step-specific input style groups
-    $this->control_groups['style_login_input'] = [
-        'title' => esc_html__('Login Input', 'bricks'),
-        'tab'   => 'style',
-    ];
-
-    $this->control_groups['style_password_input'] = [
-        'title' => esc_html__('Password Input', 'bricks'),
-        'tab'   => 'style',
-    ];
-
-    $this->control_groups['style_otp_input'] = [
-        'title' => esc_html__('OTP Input', 'bricks'),
-        'tab'   => 'style',
-    ];
-
-    $this->control_groups['style_setpassword_input'] = [
-        'title' => esc_html__('Set Password Input', 'bricks'),
-        'tab'   => 'style',
-    ];
-
-    $this->control_groups['style_forgot_input'] = [
-        'title' => esc_html__('Forgot Password Input', 'bricks'),
-        'tab'   => 'style',
-    ];
-
-    // Step-specific label style groups
-    $this->control_groups['style_login_label'] = [
-        'title' => esc_html__('Login Label', 'bricks'),
-        'tab'   => 'style',
-    ];
-
-    $this->control_groups['style_password_label'] = [
-        'title' => esc_html__('Password Label', 'bricks'),
-        'tab'   => 'style',
-    ];
-
-    $this->control_groups['style_otp_label'] = [
-        'title' => esc_html__('OTP Label', 'bricks'),
-        'tab'   => 'style',
-    ];
-
-    $this->control_groups['style_setpassword_label'] = [
-        'title' => esc_html__('Set Password Label', 'bricks'),
-        'tab'   => 'style',
-    ];
-
-    $this->control_groups['style_forgot_label'] = [
-        'title' => esc_html__('Forgot Password Label', 'bricks'),
-        'tab'   => 'style',
-    ];
-
-    $this->control_groups['style_timer_label'] = [
-        'title' => esc_html__('Reset Timer', 'bricks'),
-        'tab'   => 'style',
-    ];
-
-    $this->control_groups['style_login_password_error'] = [
-        'title' => esc_html__('Login Password Error', 'bricks'),
-        'tab'   => 'style',
-    ];
-
-    $this->control_groups['style_login_with_otp_button'] = [
-        'title' => esc_html__('Login With Otp Button', 'bricks'),
-        'tab'   => 'style',
-    ];
-
-    $this->control_groups['style_password_icon'] = [
-        'title' => esc_html__('Password Icon', 'bricks'),
-        'tab'   => 'style',
-    ];
-
-    $this->control_groups['style_country_code'] = [
-        'title' => esc_html__('Country Code', 'bricks'),
-        'tab'   => 'style',
-    ];
-
-    $this->control_groups['style_main_header'] = [
-        'title' => esc_html__('Main Header', 'bricks'),
-        'tab'   => 'style',
-    ];
-
-    $this->control_groups['style_success_message_text'] = [
-        'title' => esc_html__('Success Message Text', 'bricks'),
-        'tab'   => 'style',
-    ];
-
-    $this->control_groups['style_error_message_text'] = [
-        'title' => esc_html__('Error Message Text', 'bricks'),
-        'tab'   => 'style',
-    ];
-
-    $this->control_groups['style_notice_message_text'] = [
-        'title' => esc_html__('Notice Message Text', 'bricks'),
-        'tab'   => 'style',
-    ];
-
-    $this->control_groups['style_back_logo'] = [
-        'title' => esc_html__('Style Icon Back', 'bricks'),
-        'tab' => 'style',
-    ];
-    $this->control_groups['style_site_logo'] = [
-        'title' => esc_html__('Style Site Logo', 'bricks'),
-        'tab' => 'style',
-    ];
-
-    $this->control_groups['backLogo'] = [
-        'title' => esc_html__('Icon Back', 'bricks'),
-        'tab' => 'content',
-    ];
-    $this->control_groups['siteLogo'] = [
-        'title' => esc_html__('Site Logo', 'bricks'),
-        'tab' => 'content',
-    ];
+    foreach ($content_groups as $key => $title) {
+        $this->control_groups[$key] = [
+            'title' => esc_html__($title, 'bricks'),
+            'tab'   => 'content',
+        ];
+    }
 
 
+    /**
+     * -------------------------------------
+     * Global Style Groups
+     * -------------------------------------
+     */
+    $style_groups = [
+        'style_inputs'                => 'Inputs',
+        'style_buttons'               => 'Buttons',
+        'style_labels'                => 'Labels',
+        'style_resend'                => 'Resend Link',
+        'style_message'               => 'Message Text',
+        'style_title'                 => 'Title',
+        'style_subtitle'              => 'Subtitle',
+        'style_loginWithPassword'     => 'Login With Password',
+        'typography'                  => 'Typography',
+        'style_subHeader'             => 'SubHeader',
+        'style_timer_label'           => 'Reset Timer',
+        'style_login_password_error'  => 'Login Password Error',
+        'style_login_with_otp_button' => 'Login With Otp Button',
+        'style_password_icon'         => 'Password Icon',
+        'style_country_code'          => 'Country Code',
+        'style_main_header'           => 'Main Header',
+        'style_success_message_text'  => 'Success Message Text',
+        'style_error_message_text'    => 'Error Message Text',
+        'style_notice_message_text'   => 'Notice Message Text',
+        'style_back_logo'             => 'Style Icon Back',
+        'style_site_logo'             => 'Style Site Logo',
+    ];
 
+    foreach ($style_groups as $key => $title) {
+        $this->control_groups[$key] = [
+            'title' => esc_html__($title, 'bricks'),
+            'tab'   => 'style',
+        ];
+    }
+
+
+    /**
+     * -------------------------------------
+     * Step-Specific Style Groups
+     * -------------------------------------
+     */
+    $steps = [
+        'login'       => 'Login',
+        'password'    => 'Password',
+        'otp'         => 'OTP',
+        'setpassword' => 'Set Password',
+        'forgot'      => 'Forgot Password',
+    ];
+
+    $types = [
+        'button' => 'Button',
+        'input'  => 'Input',
+        'label'  => 'Label',
+    ];
+
+    foreach ($steps as $step_key => $step_label) {
+        foreach ($types as $type_key => $type_label) {
+
+            $group_key   = "style_{$step_key}_{$type_key}";
+            $group_title = "{$step_label} {$type_label}";
+
+            $this->control_groups[$group_key] = [
+                'title' => esc_html__($group_title, 'bricks'),
+                'tab'   => 'style',
+            ];
+        }
+    }
 }
+
 
 /*---------------------------------------------
  * CONTROLS
  *--------------------------------------------*/
 public function set_controls() {
 
-    /*-------------------------
-     * LABELS & PLACEHOLDERS (Content Tab)
-     *-------------------------*/
-    // Login 
-    $this->controls['login_title'] = [
-        'tab'    => 'content',
-        'group'  => 'Login_labels',
-        'label'  => esc_html__('Login Title', 'bricks'),
-        'type'   => 'text',
-        'default'=> 'ورود'
-    ];
-
-    $this->controls['login_subtitle'] = [
-        'tab'    => 'content',
-        'group'  => 'Login_labels',
-        'label'  => esc_html__('Login Subtitle', 'bricks'),
-        'type'   => 'text',
-        'default'=> 'توضیحات صفحه ورود'
-    ];
-
-    $this->controls['login_label'] = [
-        'tab'    => 'content',
-        'group'  => 'Login_labels',
-        'label'  => esc_html__('Login Input Label', 'bricks'),
-        'type'   => 'text',
-        'default'=> ''
-    ];
-
-    $this->controls['login_placeholder'] = [
-        'tab'    => 'content',
-        'group'  => 'Login_labels',
-        'label'  => esc_html__('Login Input Placeholder', 'bricks'),
-        'type'   => 'text',
-        'default'=> ''
-    ];
-
-    $this->controls['login_button_title'] = [
-        'tab'    => 'content',
-        'group'  => 'Login_labels',
-        'label'  => esc_html__('Login Button text', 'bricks'),
-        'type'   => 'text',
-        'default'=> 'لاگین'
-    ];
-
-
-    $this->controls['login_switch_password'] = [
-        'tab'    => 'content',
-        'group'  => 'Login_labels',
-        'label'  => esc_html__('Switch login with password', 'bricks'),
-        'type'   => 'text',
-        'default'=> 'ورود با رمزعبور'
-    ];
-    // Login with Password
-
-    $this->controls['login_password_title'] = [
-        'tab'    => 'content',
-        'group'  => 'LoginPassword_labels',
-        'label'  => esc_html__('Login Password Title', 'bricks'),
-        'type'   => 'text',
-        'default'=> 'ورود با رمز عبور'
-    ];
-
-    $this->controls['login_password_Subtitle'] = [
-        'tab'    => 'content',
-        'group'  => 'LoginPassword_labels',
-        'label'  => esc_html__('Login Password Subtitle', 'bricks'),
-        'type'   => 'text',
-        'default'=> 'توضیحات ورود با رمزعبور'
-    ];
-
-    $this->controls['login_password_username_label'] = [
-        'tab'    => 'content',
-        'group'  => 'LoginPassword_labels',
-        'label'  => esc_html__('Login password username Label', 'bricks'),
-        'type'   => 'text',
-        'default'=> ''
-    ];
-
-    $this->controls['login_password_username_placeholder'] = [
-        'tab'    => 'content',
-        'group'  => 'LoginPassword_labels',
-        'label'  => esc_html__('Login password username Placeholder', 'bricks'),
-        'type'   => 'text',
-        'default'=> ''
-    ];
-
-    $this->controls['login_password_password_label'] = [
-        'tab'    => 'content',
-        'group'  => 'LoginPassword_labels',
-        'label'  => esc_html__('Login password password Label', 'bricks'),
-        'type'   => 'text',
-        'default'=> ''
-    ];
-
-    $this->controls['login_password_password_placeholder'] = [
-        'tab'    => 'content',
-        'group'  => 'LoginPassword_labels',
-        'label'  => esc_html__('Login password password Placeholder', 'bricks'),
-        'type'   => 'text',
-        'default'=> ''
-    ];
-
-    $this->controls['login_password_button_title'] = [
-        'tab'    => 'content',
-        'group'  => 'LoginPassword_labels',
-        'label'  => esc_html__('Login password Button text', 'bricks'),
-        'type'   => 'text',
-        'default'=> 'لاگین'
-    ];
-
-    $this->controls['login_password_forgetPassword_title'] = [
-        'tab'    => 'content',
-        'group'  => 'LoginPassword_labels',
-        'label'  => esc_html__('Login password forgetPassword Button text', 'bricks'),
-        'type'   => 'text',
-        'default'=> 'لاگین'
-    ];
-
-    $this->controls['login_password_loginOTP_title'] = [
-        'tab'    => 'content',
-        'group'  => 'LoginPassword_labels',
-        'label'  => esc_html__('Login password LoginOTP Button text', 'bricks'),
-        'type'   => 'text',
-        'default'=> 'لاگین'
-    ];
-
-    // Login with OTP
-
-    $this->controls['login_OTP_title'] = [
-        'tab'    => 'content',
-        'group'  => 'LoginOTP_labels',
-        'label'  => esc_html__('Login OTP Title', 'bricks'),
-        'type'   => 'text',
-        'default'=> 'ارسال OTP'
-    ];
-
-    $this->controls['login_OTP_EditNumber'] = [
-        'tab'    => 'content',
-        'group'  => 'LoginOTP_labels',
-        'label'  => esc_html__('Login OTP Edit Number', 'bricks'),
-        'type'   => 'text',
-        'default'=> 'ویرایش شماره'
-    ];
-
-    $this->controls['login_OTP_placeholder'] = [
-        'tab'    => 'content',
-        'group'  => 'LoginOTP_labels',
-        'label'  => esc_html__('Login OTP Input Placeholder', 'bricks'),
-        'type'   => 'text',
-        'default'=> ''
-    ];
-
-    $this->controls['login_OTP_button_title'] = [
-        'tab'    => 'content',
-        'group'  => 'LoginOTP_labels',
-        'label'  => esc_html__('Login OTP Button text', 'bricks'),
-        'type'   => 'text',
-        'default'=> 'ورود'
-    ];
-
-    $this->controls['login_OTP_resendCode'] = [
-        'tab'    => 'content',
-        'group'  => 'LoginOTP_labels',
-        'label'  => esc_html__('Login OTP ResendButton text', 'bricks'),
-        'type'   => 'text',
-        'default'=> 'ورود'
-    ];
-
-
-    // Set password Page
-
-    $this->controls['set_password_title'] = [
-        'tab'    => 'content',
-        'group'  => 'SetPassword_labels',
-        'label'  => esc_html__('Set Password title', 'bricks'),
-        'type'   => 'text',
-        'default'=> 'تعریف رمز عبور'
-    ];
-
-    $this->controls['set_password_subTitle'] = [
-        'tab'    => 'content',
-        'group'  => 'SetPassword_labels',
-        'label'  => esc_html__('Set Password Subtitle', 'bricks'),
-        'type'   => 'text',
-        'default'=> 'یک رمز عبور برای حساب کاربری خود انتخاب کنید. این رمز زمانی که به کد تایید دسترسی ندارید،برای ورود به حساب به شما کمک میکند.'
-    ];
-
-    $this->controls['set_password_label'] = [
-        'tab'    => 'content',
-        'group'  => 'SetPassword_labels',
-        'label'  => esc_html__('Set password Input Label', 'bricks'),
-        'type'   => 'text',
-        'default'=> 'رمز عبور خود را وارد کنید'
-    ];
-
-    $this->controls['set_password_placeholder'] = [
-        'tab'    => 'content',
-        'group'  => 'SetPassword_labels',
-        'label'  => esc_html__('Set password Input Placeholder', 'bricks'),
-        'type'   => 'text',
-        'default'=> ''
-    ];
-
-    $this->controls['set_password_button_title'] = [
-        'tab'    => 'content',
-        'group'  => 'SetPassword_labels',
-        'label'  => esc_html__('Set password Button text', 'bricks'),
-        'type'   => 'text',
-        'default'=> 'ثبت نام'
-    ];
-
-    // Forget Password Page
-
-    $this->controls['Forget_password_step1_title'] = [
-        'tab'    => 'content',
-        'group'  => 'ForgetPassword_labels',
-        'label'  => esc_html__('Forget password Step 1 Title', 'bricks'),
-        'type'   => 'text',
-        'default'=> 'عنوان مرحله اول فراموشی رمز عبور'
-    ];
-
-    $this->controls['Forget_password_step1_subTitle'] = [
-        'tab'    => 'content',
-        'group'  => 'ForgetPassword_labels',
-        'label'  => esc_html__('Forget password Step 1 subTitle', 'bricks'),
-        'type'   => 'text',
-        'default'=> 'زیر عنوان مرحله اول فراموشی رمز عبور'
-    ];
-
-    $this->controls['Forget_password_step1_label'] = [
-        'tab'    => 'content',
-        'group'  => 'ForgetPassword_labels',
-        'label'  => esc_html__('Forget password Step 1 Input Label', 'bricks'),
-        'type'   => 'text',
-        'default'=> 'شماره موبایل خود را وارد کنید'
-    ];
-
-    $this->controls['Forget_password_step1_placeholder'] = [
-        'tab'    => 'content',
-        'group'  => 'ForgetPassword_labels',
-        'label'  => esc_html__('Forget password Step 1 Input Placeholder', 'bricks'),
-        'type'   => 'text',
-        'default'=> ''
-    ];
-
-    $this->controls['Forget_password_step1_button_title'] = [
-        'tab'    => 'content',
-        'group'  => 'ForgetPassword_labels',
-        'label'  => esc_html__('Forget password Step 1 Button text', 'bricks'),
-        'type'   => 'text',
-        'default'=> 'ارسال کد OTP'
-    ];
-
-
-
-    $this->controls['Forget_password_step2_title'] = [
-        'tab'    => 'content',
-        'group'  => 'ForgetPassword_labels',
-        'label'  => esc_html__('Forget password Step 2 Title', 'bricks'),
-        'type'   => 'text',
-        'default'=> 'عنوان مرحله اول فراموشی رمز عبور'
-    ];
-
-    $this->controls['Forget_password_step2_subTitle'] = [
-        'tab'    => 'content',
-        'group'  => 'ForgetPassword_labels',
-        'label'  => esc_html__('Forget password Step 2 subTitle', 'bricks'),
-        'type'   => 'text',
-        'default'=> 'زیر عنوان مرحله اول فراموشی رمز عبور'
-    ];
-
-    $this->controls['Forget_password_step2_label'] = [
-        'tab'    => 'content',
-        'group'  => 'ForgetPassword_labels',
-        'label'  => esc_html__('Forget password Step 2 Input Label', 'bricks'),
-        'type'   => 'text',
-        'default'=> 'شماره موبایل خود را وارد کنید'
-    ];
-
-    $this->controls['Forget_password_step2_placeholder'] = [
-        'tab'    => 'content',
-        'group'  => 'ForgetPassword_labels',
-        'label'  => esc_html__('Forget password Step 2 Input Placeholder', 'bricks'),
-        'type'   => 'text',
-        'default'=> ''
-    ];
-
-    $this->controls['Forget_password_step2_button_title'] = [
-        'tab'    => 'content',
-        'group'  => 'ForgetPassword_labels',
-        'label'  => esc_html__('Forget password Step 2 Button text', 'bricks'),
-        'type'   => 'text',
-        'default'=> 'ارسال کد OTP'
-    ];
-
-
-    $this->controls['Forget_password_step3_title'] = [
-        'tab'    => 'content',
-        'group'  => 'ForgetPassword_labels',
-        'label'  => esc_html__('Forget password Step 3 Title', 'bricks'),
-        'type'   => 'text',
-        'default'=> 'عنوان مرحله اول فراموشی رمز عبور'
-    ];
-
-    $this->controls['Forget_password_step3_subTitle'] = [
-        'tab'    => 'content',
-        'group'  => 'ForgetPassword_labels',
-        'label'  => esc_html__('Forget password Step 3 subTitle', 'bricks'),
-        'type'   => 'text',
-        'default'=> 'زیر عنوان مرحله اول فراموشی رمز عبور'
-    ];
-
-    $this->controls['Forget_password_step3_label'] = [
-        'tab'    => 'content',
-        'group'  => 'ForgetPassword_labels',
-        'label'  => esc_html__('Forget password Step 3 Input Label', 'bricks'),
-        'type'   => 'text',
-        'default'=> 'شماره موبایل خود را وارد کنید'
-    ];
-
-    $this->controls['Forget_password_step3_placeholder'] = [
-        'tab'    => 'content',
-        'group'  => 'ForgetPassword_labels',
-        'label'  => esc_html__('Forget password Step 3 Input Placeholder', 'bricks'),
-        'type'   => 'text',
-        'default'=> ''
-    ];
-
-    $this->controls['Forget_password_step3_button_title'] = [
-        'tab'    => 'content',
-        'group'  => 'ForgetPassword_labels',
-        'label'  => esc_html__('Forget password Step 3 Button text', 'bricks'),
-        'type'   => 'text',
-        'default'=> 'ارسال کد OTP'
-    ];
-
-
-    //login with password
-
-    $this->controls['loginWithPassword_typography'] = [
-        'tab'   => 'style',
-        'group' => 'style_loginWithPassword',
-        'label' => esc_html__('Typography', 'bricks'),
-        'type'  => 'typography',
-        'css'   => [
-            ['property' => 'font', 'selector' => '.login-with-password'],
-        ],
-    ];
-
-    $this->controls['loginWithPassword_background'] = [
-        'tab'   => 'style',
-        'group' => 'style_loginWithPassword',
-        'label' => esc_html__('Background Color', 'bricks'),
-        'type'  => 'color',
-        'css'   => [
-            ['property' => 'background-color', 'selector' => '.login-with-password'],
-        ],
-    ];
-
-    $this->controls['loginWithPassword_padding'] = [
-        'tab'   => 'style',
-        'group' => 'style_loginWithPassword',
-        'label' => esc_html__('Padding', 'bricks'),
-        'type'  => 'dimensions',
-        'css'   => [
-            ['property' => 'padding', 'selector' => '.login-with-password'],
-        ],
-    ];
-
-    $this->controls['loginWithPassword_margin'] = [
-        'tab'   => 'style',
-        'group' => 'style_loginWithPassword',
-        'label' => esc_html__('Margin', 'bricks'),
-        'type'  => 'dimensions',
-        'css'   => [
-            ['property' => 'margin', 'selector' => '.login-with-password'],
-        ],
-    ];
-
-
-    /*-------------------------
-     * STYLE: MESSAGE TEXT
-     *-------------------------*/
-    $this->controls['messageColor'] = [
-        'tab'   => 'style',
-        'group' => 'style_message',
-        'label' => esc_html__('Text Color', 'bricks'),
-        'type'  => 'color',
-        'css'   => [
-            ['property' => 'color', 'selector' => '.login-message'],
-        ],
-    ];
-
-    $this->controls['messageBackground'] = [  // Renamed to avoid duplicate
-        'tab'   => 'style',
-        'group' => 'style_message',
-        'label' => esc_html__('Background Color', 'bricks'),
-        'type'  => 'color',
-        'css'   => [
-            ['property' => 'background-color', 'selector' => '.login-message'],
-        ],
-    ];
-
-    $this->controls['messageTypography'] = [
-        'tab'   => 'style',
-        'group' => 'style_message',
-        'label' => esc_html__('Typography', 'bricks'),
-        'type'  => 'typography',
-        'css'   => [
-            ['property' => 'font', 'selector' => '.login-message'],
-        ],
-    ];
-
-    $this->controls['messageMargin'] = [  // Renamed for clarity
-        'tab'   => 'style',
-        'group' => 'style_message',
-        'label' => esc_html__('Margin', 'bricks'),
-        'type'  => 'dimensions',
-        'css'   => [
-            ['property' => 'margin', 'selector' => '.login-message'],
-        ],
-    ];
-
-    $this->controls['messagePadding'] = [  // Renamed to avoid duplicate
-        'tab'   => 'style',
-        'group' => 'style_message',
-        'label' => esc_html__('Padding', 'bricks'),
-        'type'  => 'dimensions',
-        'css'   => [
-            ['property' => 'padding', 'selector' => '.login-message'],
-        ],
-    ];
-
-    /*-------------------------
-     * STYLE: TITLE & SUBTITLE
-     *-------------------------*/
-    $this->controls['titleTypography'] = [
-        'tab'   => 'style',
-        'group' => 'style_title',
-        'label' => esc_html__('Title Typography', 'bricks'),
-        'type'  => 'typography',
-        'css'   => [
-            ['property' => 'font', 'selector' => '.login-title'],
-        ],
-    ];
-
-    $this->controls['titlePadding'] = [
-        'tab'   => 'style',
-        'group' => 'style_title',
-        'label' => esc_html__('Padding', 'bricks'),
-        'type'  => 'dimensions',
-        'css'   => [
-            ['property' => 'padding', 'selector' => '.login-title'],
-        ],
-    ];
-
-    $this->controls['titleMargin'] = [
-        'tab'   => 'style',
-        'group' => 'style_title',
-        'label' => esc_html__('Margin', 'bricks'),
-        'type'  => 'dimensions',
-        'css'   => [
-            ['property' => 'margin', 'selector' => '.login-title'],
-        ],
-    ];
-
-
-    $this->controls['subTitleTypography'] = [
-        'tab'   => 'style',
-        'group' => 'style_subtitle',
-        'label' => esc_html__('Subtitle Typography', 'bricks'),
-        'type'  => 'typography',
-        'css'   => [
-            ['property' => 'font', 'selector' => '.login-subtitle'],
-        ],
-    ];
-
-    $this->controls['subTitlePadding'] = [
-        'tab'   => 'style',
-        'group' => 'style_subtitle',
-        'label' => esc_html__('Padding', 'bricks'),
-        'type'  => 'dimensions',
-        'css'   => [
-            ['property' => 'padding', 'selector' => '.login-subtitle'],
-        ],
-    ];
-
-    $this->controls['subTitleMargin'] = [
-        'tab'   => 'style',
-        'group' => 'style_subtitle',
-        'label' => esc_html__('Margin', 'bricks'),
-        'type'  => 'dimensions',
-        'css'   => [
-            ['property' => 'margin', 'selector' => '.login-subtitle'],
-        ],
-    ];
-
-
-
-
-    $this->controls['subtitleColor'] = [
-        'tab'   => 'style',
-        'group' => 'typography',
-        'label' => esc_html__('Subtitle Color', 'bricks'),
-        'type'  => 'color',
-        'css'   => [
-            ['property' => 'color', 'selector' => '.login-subtitle'],
-        ],
-    ];
-
-    $this->controls['headerBackground'] = [
-        'tab'   => 'style',
-        'group' => 'background',
-        'label' => esc_html__('Header Background', 'bricks'),
-        'type'  => 'color',
-        'css'   => [
-            ['property' => 'background-color', 'selector' => '.login-header'],
-        ],
-    ];
-
-    $this->controls['backlogo'] = [
-        'tab'   => 'content',
-        'group' => 'backLogo',
-        'label' => esc_html__('Back Logo', 'textdomain'),
-        'type'  => 'image',
-    ];
-
-    $this->controls['sitelogo'] = [
-        'tab'   => 'content',
-        'group' => 'siteLogo',
-        'label' => esc_html__('Website Logo', 'textdomain'),
-        'type'  => 'image',
-    ];
-
-
+    // Call method to generate content controls for all steps
+    $this->generate_content_controls();
     // Generate step-specific controls dynamically to reduce code repetition
     $this->generate_step_controls();
 
 }
+
+/*---------------------------------------------
+ * Content controls for different steps (Login, Password, OTP, Set Password, Forgot Password)
+ *---------------------------------------------*/
+private function generate_content_controls() {
+
+    $content_structure = [
+
+        /* ---------------- LOGIN ---------------- */
+        'login' => [
+            'group' => 'Login_labels',
+            'fields' => [
+                'title' => ['type' => 'text', 'label' => 'Login Title', 'default' => 'ورود'],
+                'subtitle' => ['type' => 'text', 'label' => 'Login Subtitle', 'default' => 'توضیحات صفحه ورود'],
+                'label' => ['type' => 'text', 'label' => 'Login Input Label', 'default' => ''],
+                'placeholder' => ['type' => 'text', 'label' => 'Login Input Placeholder', 'default' => ''],
+                'button_title' => ['type' => 'text', 'label' => 'Login Button Text', 'default' => 'لاگین'],
+                'switch_password' => ['type' => 'text', 'label' => 'Switch Login With Password', 'default' => 'ورود با رمزعبور'],
+            ]
+        ],
+
+        /* ---------------- LOGIN PASSWORD ---------------- */
+        'login_password' => [
+            'group' => 'LoginPassword_labels',
+            'fields' => [
+                'title' => ['type' => 'text', 'label' => 'Login Password Title', 'default' => 'ورود با رمز عبور'],
+                'subtitle' => ['type' => 'text', 'label' => 'Login Password Subtitle', 'default' => 'توضیحات ورود با رمزعبور'],
+                'username_label' => ['type' => 'text', 'label' => 'Username Label', 'default' => ''],
+                'username_placeholder' => ['type' => 'text', 'label' => 'Username Placeholder', 'default' => ''],
+                'password_label' => ['type' => 'text', 'label' => 'Password Label', 'default' => ''],
+                'password_placeholder' => ['type' => 'text', 'label' => 'Password Placeholder', 'default' => ''],
+                'button_title' => ['type' => 'text', 'label' => 'Login Button Text', 'default' => 'لاگین'],
+                'forgetPassword_title' => ['type' => 'text', 'label' => 'Forget Password Button Text', 'default' => 'لاگین'],
+                'loginOTP_title' => ['type' => 'text', 'label' => 'Login OTP Button Text', 'default' => 'لاگین'],
+            ]
+        ],
+
+        /* ---------------- LOGIN OTP ---------------- */
+        'login_OTP' => [
+            'group' => 'LoginOTP_labels',
+            'fields' => [
+                'title' => ['type' => 'text', 'label' => 'Login OTP Title', 'default' => 'ارسال OTP'],
+                'EditNumber' => ['type' => 'text', 'label' => 'Edit Number Text', 'default' => 'ویرایش شماره'],
+                'placeholder' => ['type' => 'text', 'label' => 'OTP Placeholder', 'default' => ''],
+                'button_title' => ['type' => 'text', 'label' => 'OTP Button Text', 'default' => 'ورود'],
+                'resendCode' => ['type' => 'text', 'label' => 'Resend Code Text', 'default' => 'ورود'],
+            ]
+        ],
+
+        /* ---------------- SET PASSWORD ---------------- */
+        'set_password' => [
+            'group' => 'SetPassword_labels',
+            'fields' => [
+                'title' => ['type' => 'text', 'label' => 'Set Password Title', 'default' => 'تعریف رمز عبور'],
+                'subTitle' => ['type' => 'textarea', 'label' => 'Set Password Subtitle', 'default' => 'یک رمز عبور برای حساب کاربری خود انتخاب کنید.'],
+                'label' => ['type' => 'text', 'label' => 'Input Label', 'default' => 'رمز عبور خود را وارد کنید'],
+                'placeholder' => ['type' => 'text', 'label' => 'Input Placeholder', 'default' => ''],
+                'button_title' => ['type' => 'text', 'label' => 'Button Text', 'default' => 'ثبت نام'],
+            ]
+        ],
+    ];
+
+    /* ------------------------------------------------
+     * AUTO GENERATE FORGET PASSWORD STEPS (1,2,3)
+     * ----------------------------------------------- */
+    for ($i = 1; $i <= 3; $i++) {
+
+        $prefix = "Forget_password_step{$i}";
+
+        $content_structure[$prefix] = [
+            'group' => 'ForgetPassword_labels',
+            'fields' => [
+                'title' => [
+                    'id' => "{$prefix}_title",
+                    'type' => 'text',
+                    'label' => "Forget password Step {$i} Title",
+                    'default' => "عنوان مرحله {$i} فراموشی رمز عبور"
+                ],
+                'subTitle' => [
+                    'id' => "{$prefix}_subTitle",
+                    'type' => 'text',
+                    'label' => "Forget password Step {$i} subTitle",
+                    'default' => "زیر عنوان مرحله {$i} فراموشی رمز عبور"
+                ],
+                'label' => [
+                    'id' => "{$prefix}_label",
+                    'type' => 'text',
+                    'label' => "Forget password Step {$i} Input Label",
+                    'default' => "شماره موبایل خود را وارد کنید"
+                ],
+                'placeholder' => [
+                    'id' => "{$prefix}_placeholder",
+                    'type' => 'text',
+                    'label' => "Forget password Step {$i} Input Placeholder",
+                    'default' => ''
+                ],
+                'button_title' => [
+                    'id' => "{$prefix}_button_title",
+                    'type' => 'text',
+                    'label' => "Forget password Step {$i} Button text",
+                    'default' => 'ارسال کد OTP'
+                ],
+            ]
+        ];
+    }
+
+
+    /* ------------------------------------------------
+     * IMAGE CONTROLS
+     * ----------------------------------------------- */
+    $image_controls = [
+        'backlogo' => ['group' => 'backLogo', 'label' => 'Back Logo'],
+        'sitelogo' => ['group' => 'siteLogo', 'label' => 'Website Logo'],
+    ];
+
+    foreach ($image_controls as $key => $img) {
+        $this->controls[$key] = [
+            'tab'   => 'content',
+            'group' => $img['group'],
+            'label' => esc_html__($img['label'], 'bricks'),
+            'type'  => 'image',
+        ];
+    }
+
+    /* ------------------------------------------------
+     * GENERATE ALL TEXT CONTROLS
+     * ----------------------------------------------- */
+    foreach ($content_structure as $step => $config) {
+
+        foreach ($config['fields'] as $field_key => $field) {
+
+            $control_id = "{$step}_{$field_key}";
+
+            $this->controls[$control_id] = [
+                'tab'     => 'content',
+                'group'   => $config['group'],
+                'label'   => esc_html__($field['label'], 'bricks'),
+                'type'    => $field['type'],
+                'default' => $field['default'],
+            ];
+        }
+    }
+}
+
+
 
 /*---------------------------------------------
  * GENERATE STEP-SPECIFIC CONTROLS (DRY Approach)
@@ -824,6 +310,12 @@ private function generate_step_controls() {
             'group'    => 'style_login_with_otp_button',
             'selector' => '.login-btn-otp',
             'controls' => ['typography', 'text', 'padding', 'margin', 'background']
+        ],
+        'loginWithPassword' => [
+            'title'    => 'Login With Password Button',
+            'group'    => 'style_loginWithPassword',
+            'selector' => '.login-with-password',
+            'controls' => ['typography', 'padding', 'margin', 'background']
         ],
         'Buttons' => [
             'title'    => 'Buttons',
@@ -934,7 +426,22 @@ private function generate_step_controls() {
 
     ];
 
-    $addon_input = [
+    $title_steps = [
+        'main_title' => [
+            'title'    => 'Main Title',
+            'group'    => 'style_title',
+            'selector' => '.login-title',
+            'controls' => ['typography', 'margin','padding','border','width','height','background']
+        ],
+        'sub_title' => [
+            'title'    => 'Sub Title',
+            'group'    => 'style_subtitle',
+            'selector' => '.login-subtitle',
+            'controls' => ['typography', 'margin','padding','border','width','height','background']
+        ],
+    ];
+
+    $addons = [
         'password-icon' => [
             'title'    => 'Password Icon',
             'group'    => 'style_password_icon',
@@ -965,10 +472,22 @@ private function generate_step_controls() {
             'selector' => '.auth-site-logo',
             'controls' => ['typography', 'margin','padding','border','width','height','background']
         ],
+        'header' => [
+            'title'    => 'SubHeader',
+            'group'    => 'style_subHeader',
+            'selector' => '.login-header',
+            'controls' => ['typography', 'margin','padding','border','width','height','background']
+        ],
 
     ];
 
     $message_steps = [
+        'main_message' => [
+            'title'    => 'Main Message',
+            'group'    => 'style_message',
+            'selector' => '.login-message',
+            'controls' => ['background', 'typography', 'margin', 'padding', 'border', 'positionOffsets', 'position', 'width', 'height']
+        ],
         'success' => [
             'title'    => 'Success Message Text',
             'group'    => 'style_success_message_text',
@@ -1005,12 +524,16 @@ private function generate_step_controls() {
     }
 
     // Generate controls for addon inputs
-    foreach ($addon_input as $step => $config) {
-        $this->add_step_element_controls('addon input', $step, $config);
+    foreach ($addons as $step => $config) {
+        $this->add_step_element_controls('addon', $step, $config);
     }
 
     foreach ($message_steps as $step => $config) {
         $this->add_step_element_controls('message', $step, $config);
+    }
+
+    foreach ($title_steps as $step => $config) {
+        $this->add_step_element_controls('title', $step, $config);
     }
 }
 
@@ -1110,7 +633,7 @@ private function add_step_element_controls($element_type, $step, $config) {
                     'property' => 'left',
                 ],
             ],
-        ]
+        ],
     ];
 
     // Generate a control for each specified property
@@ -1128,28 +651,41 @@ private function add_step_element_controls($element_type, $step, $config) {
             $selector .= $def['selector_suffix'];
         }
 
-        $this->controls[$control_id] = [
+        $control = [
             'tab'   => 'style',
             'group' => $config['group'],
             'label' => $def['label'],
             'type'  => $def['type'],
-            'css'   => [
-                ['property' => $def['property'], 'selector' => $selector]
-            ]
         ];
+
+        // Only add CSS if property exists
+        if (isset($def['property'])) {
+            $control['css'] = [
+                [
+                    'property' => $def['property'],
+                    'selector' => $selector
+                ]
+            ];
+        }
+
+        $this->controls[$control_id] = $control;
     }
 }
 
-    /*---------------------------------------------
-     * ENQUEUE SCRIPTS
-     *--------------------------------------------*/
-    public function enqueue_scripts() {
-        wp_enqueue_script('login-otp-script');
-    }
+/*---------------------------------------------
+    * ENQUEUE SCRIPTS
+    *--------------------------------------------*/
+public function enqueue_scripts() {
+    wp_enqueue_script('login-otp-script');
+}
 
-    /*---------------------------------------------
-     * RENDER
-     *--------------------------------------------*/
+/*---------------------------------------------
+* RENDER
+*--------------------------------------------*/
+private function get_setting($key, $default = '') {
+    return esc_html($this->settings[$key] ?? $default);
+}
+
 public function render() {
         // Main wrapper classes
         $this->set_attribute('_root', 'class', ['login-otp-wrapper', 'auth-box']);
@@ -1205,53 +741,61 @@ public function render() {
 
         $this->set_attribute('authBackLogo','onclick', 'window.history.back()');
 
+        $otp_length = intval(get_option('otp_login_otp_length', 4));
+
 
 
         // متغیرهای محتوا
-        $phone_label = esc_html($this->settings['phone_label'] ?? 'شماره تلفن همراه');
-        $login_title = esc_html($this->settings['login_title'] ?? '');
-        $login_subtitle = esc_html($this->settings['login_subtitle'] ?? '');
-        $login_label = esc_html($this->settings['login_label'] ?? '');
-        $login_placeholder = esc_html($this->settings['login_placeholder'] ?? '');
-        $login_button_title = esc_html($this->settings['login_button_title'] ?? '');
-        $login_switch_password = esc_html($this->settings['login_switch_password'] ?? '');
-        $login_password_title = esc_html($this->settings['login_password_title'] ?? '');
-        $login_password_Subtitle = esc_html($this->settings['login_password_Subtitle'] ?? '');
-        $login_password_username_label = esc_html($this->settings['login_password_username_label'] ?? '');
-        $login_password_username_placeholder = esc_html($this->settings['login_password_username_placeholder'] ?? '');
-        $login_password_password_label = esc_html($this->settings['login_password_password_label'] ?? '');
-        $login_password_password_placeholder = esc_html($this->settings['login_password_password_placeholder'] ?? '');
-        $login_password_button_title = esc_html($this->settings['login_password_button_title'] ?? '');
-        $login_password_forgetPassword_title = esc_html($this->settings['login_password_forgetPassword_title'] ?? '');
-        $login_password_loginOTP_title = esc_html($this->settings['login_password_loginOTP_title'] ?? '');
-        $login_OTP_title = esc_html($this->settings['login_OTP_title'] ?? '');
-        $login_OTP_EditNumber = esc_html($this->settings['login_OTP_EditNumber'] ?? '');
-        $login_OTP_placeholder = esc_html($this->settings['login_OTP_placeholder'] ?? '');
-        $login_OTP_button_title = esc_html($this->settings['login_OTP_button_title'] ?? '');
-        $login_OTP_resendCode = esc_html($this->settings['login_OTP_resendCode'] ?? '');
-        $set_password_title = esc_html($this->settings['set_password_title'] ?? '');
-        $set_password_subTitle = esc_html($this->settings['set_password_subTitle'] ?? '');
-        $set_password_label = esc_html($this->settings['set_password_label'] ?? '');
-        $set_password_placeholder = esc_html($this->settings['set_password_placeholder'] ?? '');
-        $set_password_button_title = esc_html($this->settings['set_password_button_title'] ?? '');
-        $Forget_password_step1_title = esc_html($this->settings['Forget_password_step1_title'] ?? '');
-        $Forget_password_step1_subTitle = esc_html($this->settings['Forget_password_step1_subTitle'] ?? '');
-        $Forget_password_step1_label = esc_html($this->settings['Forget_password_step1_label'] ?? '');
-        $Forget_password_step1_placeholder = esc_html($this->settings['Forget_password_step1_placeholder'] ?? '');
-        $Forget_password_step1_button_title = esc_html($this->settings['Forget_password_step1_button_title'] ?? '');
-        $Forget_password_step2_title = esc_html($this->settings['Forget_password_step2_title'] ?? '');
-        $Forget_password_step2_subTitle = esc_html($this->settings['Forget_password_step2_subTitle'] ?? '');
-        $Forget_password_step2_label = esc_html($this->settings['Forget_password_step2_label'] ?? '');
-        $Forget_password_step2_placeholder = esc_html($this->settings['Forget_password_step2_placeholder'] ?? '');
-        $Forget_password_step2_button_title = esc_html($this->settings['Forget_password_step2_button_title'] ?? '');
-        $Forget_password_step3_title = esc_html($this->settings['Forget_password_step3_title'] ?? '');
-        $Forget_password_step3_subTitle = esc_html($this->settings['Forget_password_step3_subTitle'] ?? '');
-        $Forget_password_step3_label = esc_html($this->settings['Forget_password_step3_label'] ?? '');
-        $Forget_password_step3_placeholder = esc_html($this->settings['Forget_password_step3_placeholder'] ?? '');
-        $Forget_password_step3_button_title = esc_html($this->settings['Forget_password_step3_button_title'] ?? '');
-        $country_code = esc_html($this->settings['country_code_text'] ?? '');
-        
-        $otp_length = intval(get_option('otp_login_otp_length', 4));
+        $content_keys =[
+            'phone_label',
+            'login_title',
+            'login_subtitle',
+            'login_label',
+            'login_placeholder',
+            'login_button_title',
+            'login_switch_password',
+            'login_password_title',
+            'login_password_Subtitle',
+            'login_password_username_label',
+            'login_password_username_placeholder',
+            'login_password_password_label',
+            'login_password_password_placeholder',
+            'login_password_button_title',
+            'login_password_forgetPassword_title',
+            'login_password_loginOTP_title',
+            'login_OTP_title',
+            'login_OTP_EditNumber',
+            'login_OTP_placeholder',
+            'login_OTP_button_title',
+            'login_OTP_resendCode',
+            'set_password_title',
+            'set_password_subTitle',
+            'set_password_label',
+            'set_password_placeholder',
+            'set_password_button_title',
+            'Forget_password_step1_title',
+            'Forget_password_step1_subTitle',
+            'Forget_password_step1_label',
+            'Forget_password_step1_placeholder',
+            'Forget_password_step1_button_title',
+            'Forget_password_step2_title',
+            'Forget_password_step2_subTitle',
+            'Forget_password_step2_label',
+            'Forget_password_step2_placeholder',
+            'Forget_password_step2_button_title',
+            'Forget_password_step3_title',
+            'Forget_password_step3_subTitle',
+            'Forget_password_step3_label',
+            'Forget_password_step3_placeholder',
+            'Forget_password_step3_button_title',
+            'country_code_text'
+        ];
+
+        $content = [];
+
+        foreach ($content_keys as $key) {
+            $content[$key] = $this->get_setting($key);
+        };
 
         
         // Countdown and OTP length
@@ -1265,50 +809,50 @@ public function render() {
                             <img {$this->render_attributes('authSiteLogo')}  src='$site_logo_url' alt='Site Logo'>
                     </div>
                     <div {$this->render_attributes('header')}>
-                            <h2 {$this->render_attributes('title')} data-role='form-title'>{$login_title}</h2>
-                            <p {$this->render_attributes('subtitle')} data-role='form-subtitle'>{$login_subtitle}</p>
+                            <h2 {$this->render_attributes('title')} data-role='form-title'>{$content['login_title']}</h2>
+                            <p {$this->render_attributes('subtitle')} data-role='form-subtitle'>{$content['login_subtitle']}</p>
                     </div>
                     <div>
-                        <label {$this->render_attributes('login_label')}>{$login_label}</label>
+                        <label {$this->render_attributes('login_label')}>{$content['login_label']}</label>
                         <div {$this->render_attributes('login_input')}>
-                            <input type='tel' data-role='phone' placeholder='{$login_placeholder}' />
-                            <span {$this->render_attributes('country_code')}>{$country_code}</span>
+                            <input type='tel' data-role='phone' placeholder='{$content['login_placeholder']}' />
+                            <span {$this->render_attributes('country_code')}>{$content['country_code_text']}</span>
                         </div>
                         <div {$this->render_attributes('message')} data-role='message'></div>
                     </div>
                     <div class='button-container'>
                         <button {$this->render_attributes('login_btn_send')} data-role='send'>
-                            <span class='btn-text'>{$login_button_title}</span>
+                            <span class='btn-text'>{$content['login_button_title']}</span>
                             <span class='btn-spinner'></span>    
                         </button>
-                        <button {$this->render_attributes('login_btn_switch')} data-role='switch-to-password'>{$login_switch_password}</button>
+                        <button {$this->render_attributes('login_btn_switch')} data-role='switch-to-password'>{$content['login_switch_password']}</button>
                     </div>
                 </div>";
         // Step 1b: Phone + Password (Password Login)
-        echo "<div {$this->render_attributes('step')} data-role='step' data-step='password' style='display:none;' >
+        echo "<div {$this->render_attributes('step')} data-role='step' data-step='password' style='display:none;'  >
                 <div {$this->render_attributes('mainHeader')}>
                         <img data-role='switch-to-otp' {$this->render_attributes('authBackLogo')}  src='$back_logo_url' alt='Back Logo'>
                         <img {$this->render_attributes('authSiteLogo')}  src='$site_logo_url' alt='Site Logo'>
                 </div>
                 <div {$this->render_attributes('header')}>
-                    <h2 {$this->render_attributes('title')} data-role='form-title'>{$login_password_title}</h2>
-                    <p {$this->render_attributes('subtitle')} data-role='form-subtitle'>{$login_password_Subtitle}</p>
+                    <h2 {$this->render_attributes('title')} data-role='form-title'>{$content['login_password_title']}</h2>
+                    <p {$this->render_attributes('subtitle')} data-role='form-subtitle'>{$content['login_password_Subtitle']}</p>
                 </div>
                 <div>
                     <div>
-                        <label {$this->render_attributes('password_label')}>{$login_password_username_label}</label>
+                        <label {$this->render_attributes('password_label')}>{$content['login_password_username_label']}</label>
                         <div {$this->render_attributes('password_input')}>
-                            <input type='tel' data-role='phone' placeholder='{$login_password_username_placeholder}' />
-                            <span {$this->render_attributes('country_code')}>{$country_code}</span>
+                            <input type='tel' data-role='phone' placeholder='{$content['login_password_username_placeholder']}' />
+                            <span {$this->render_attributes('country_code')}>{$content['country_code_text']}</span>
                         </div>
                     </div>
                     <div>
-                        <label {$this->render_attributes('password_label')}>{$login_password_password_label}</label>
+                        <label {$this->render_attributes('password_label')}>{$content['login_password_password_label']}</label>
                         <div {$this->render_attributes('password_input')} data-role='password-wrapper'>
                             <input
                                 type='password'
                                 data-role='password-field'
-                                placeholder='{$login_password_password_placeholder}'
+                                placeholder='{$content['login_password_password_placeholder']}'
                             >
                                 <span {$this->render_attributes('password_icon')}
                                     data-role='toggle-password'
@@ -1339,24 +883,24 @@ public function render() {
                         </div>
                     </div>
                     <div {$this->render_attributes('message')} data-role='message'></div>
-                    <button {$this->render_attributes('password_btn_forgot')} data-role='forgot'>{$login_password_forgetPassword_title}</button>
+                    <button {$this->render_attributes('password_btn_forgot')} data-role='forgot'>{$content['login_password_forgetPassword_title']}</button>
                 </div>
                 <div class='button-container'>
                     <button {$this->render_attributes('password_btn_login')} data-role='login-password'>
-                        <span class='btn-text' >{$login_password_button_title}</span>
+                        <span class='btn-text' >{$content['login_password_button_title']}</span>
                         <span class='btn-spinner'></span>
                     </button>
-                    <button {$this->render_attributes('password_btn_otp')} data-role='switch-to-otp'>{$login_password_loginOTP_title}</button>
+                    <button {$this->render_attributes('password_btn_otp')} data-role='switch-to-otp'>{$content['login_password_loginOTP_title']}</button>
                 </div>
               </div>";
         // Step 2: OTP
-        echo "<div {$this->render_attributes('step')} data-role='step' data-step='2' style='display:none;'  >
+        echo "<div {$this->render_attributes('step')} data-role='step' data-step='2' style='display:none;' >
                     <div {$this->render_attributes('mainHeader')}>
                             <img data-role='edit-number' {$this->render_attributes('authBackLogo')}  src='$back_logo_url' alt='Back Logo'>
                             <img {$this->render_attributes('authSiteLogo')}  src='$site_logo_url' alt='Site Logo'>
                     </div>
                     <div {$this->render_attributes('header')}>
-                            <h2 {$this->render_attributes('title')} data-role='form-title'>{$login_OTP_title}</h2>
+                            <h2 {$this->render_attributes('title')} data-role='form-title'>{$content['login_OTP_title']}</h2>
                             <div {$this->render_attributes('subtitle')}>
                                 <p data-role='user-message'></p>
                                 <p data-role='display-phone'></p>
@@ -1364,19 +908,19 @@ public function render() {
                             </div>
                     </div>
                     <div>
-                        <p {$this->render_attributes('edit_number')} data-role='edit-number' cursor-pointer = true>{$login_OTP_EditNumber}</p>
+                        <p {$this->render_attributes('edit_number')} data-role='edit-number' cursor-pointer = true>{$content['login_OTP_EditNumber']}</p>
                         <div {$this->render_attributes('login_input')}>
-                            <input {$this->render_attributes('otp_input')} type='tel' data-role='otp' placeholder='{$Forget_password_step2_placeholder}' />
+                            <input {$this->render_attributes('otp_input')} type='tel' data-role='otp' placeholder='{$content['Forget_password_step2_placeholder']}' />
                         </div>
                         <p {$this->render_attributes('resend_timer')} data-role='timer'></p>
                         <div {$this->render_attributes('resend_wrapper')}>
-                            <button {$this->render_attributes('otp_btn_resend')} data-role='resend' disabled>{$login_OTP_resendCode}</button>
+                            <button {$this->render_attributes('otp_btn_resend')} data-role='resend' disabled>{$content['login_OTP_resendCode']}</button>
                         </div>
                         <div {$this->render_attributes('message')} data-role='message'></div>
                     </div>
                     <div>
                         <button {$this->render_attributes('otp_btn_verify')} data-role='verify' disabled>
-                            <span class='btn-text' >{$login_OTP_button_title}</span>
+                            <span class='btn-text' >{$content['login_OTP_button_title']}</span>
                             <span class='btn-spinner'></span>
                         </button>
                     </div>
@@ -1389,16 +933,16 @@ public function render() {
                         <img {$this->render_attributes('authSiteLogo')}  src='$site_logo_url' alt='Site Logo'>
                 </div>
                 <div {$this->render_attributes('header')}>
-                    <h2 {$this->render_attributes('title')} data-role='form-title'>{$set_password_title}</h2>
-                    <p {$this->render_attributes('subtitle')} data-role='form-subtitle'>{$set_password_subTitle}</p>
+                    <h2 {$this->render_attributes('title')} data-role='form-title'>{$content['set_password_title']}</h2>
+                    <p {$this->render_attributes('subtitle')} data-role='form-subtitle'>{$content['set_password_subTitle']}</p>
                 </div>
                 <div>
-                    <label {$this->render_attributes('setpassword_label')}>{$set_password_label}</label>
+                    <label {$this->render_attributes('setpassword_label')}>{$content['set_password_label']}</label>
                     <div {$this->render_attributes('password_input')} data-role='password-wrapper'>
                                 <input
                                     type='password'
                                     data-role='password-field'
-                                    placeholder='{$login_password_password_placeholder}'
+                                    placeholder='{$content['login_password_password_placeholder']}'
                                 >
                                     <span {$this->render_attributes('password_icon')}
                                         data-role='toggle-password'
@@ -1430,7 +974,7 @@ public function render() {
                     <div {$this->render_attributes('message')} data-role='message'></div>
                 </div>
                     <button {$this->render_attributes('setpassword_btn')} data-role='register'>
-                        <span class='btn-text' >{$set_password_button_title}</span>
+                        <span class='btn-text' >{$content['set_password_button_title']}</span>
                         <span class='btn-spinner'></span>
                     </button>
         </div>";
@@ -1441,19 +985,19 @@ public function render() {
                         <img {$this->render_attributes('authSiteLogo')}  src='$site_logo_url' alt='Site Logo'>
                 </div>
                 <div {$this->render_attributes('header')}>
-                        <h2 {$this->render_attributes('title')} data-role='form-title'>{$Forget_password_step1_title}</h2>
-                        <p {$this->render_attributes('subtitle')} data-role='form-subtitle'>{$Forget_password_step1_subTitle}</p>
+                        <h2 {$this->render_attributes('title')} data-role='form-title'>{$content['Forget_password_step1_title']}</h2>
+                        <p {$this->render_attributes('subtitle')} data-role='form-subtitle'>{$content['Forget_password_step1_subTitle']}</p>
                 </div>
                 <div>
-                    <label {$this->render_attributes('forgot_label')}>{$Forget_password_step1_label}</label>
+                    <label {$this->render_attributes('forgot_label')}>{$content['Forget_password_step1_label']}</label>
                     <div {$this->render_attributes('login_input')}>
-                        <input type='tel' data-role='phone' placeholder='{$Forget_password_step1_placeholder}' />
-                        <span {$this->render_attributes('country_code')}>{$country_code}</span>
+                        <input type='tel' data-role='phone' placeholder='{$content['Forget_password_step1_placeholder']}' />
+                        <span {$this->render_attributes('country_code')}>{$content['country_code_text']}</span>
                     </div>
                     <div {$this->render_attributes('message')}  data-role='message'></div>
                 </div>
                 <button {$this->render_attributes('forgot_btn')} data-role='send-forgot'>
-                    <span class='btn-text' >{$Forget_password_step1_button_title}</span>
+                    <span class='btn-text' >{$content['Forget_password_step1_button_title']}</span>
                     <span class='btn-spinner'></span>
                 </button>
               </div>";
@@ -1463,7 +1007,7 @@ public function render() {
                         <img {$this->render_attributes('authSiteLogo')}  src='$site_logo_url' alt='Site Logo'>
                 </div>
                 <div {$this->render_attributes('header')}>
-                        <h2 {$this->render_attributes('title')} data-role='form-title'>{$Forget_password_step2_title}</h2>
+                        <h2 {$this->render_attributes('title')} data-role='form-title'>{$content['Forget_password_step2_title']}</h2>
                         <div {$this->render_attributes('subtitle')}>
                             <p data-role='user-message'></p>
                             <p data-role='display-phone'></p>
@@ -1471,18 +1015,18 @@ public function render() {
                         </div>
                 </div>
                 <div>
-                    <p {$this->render_attributes('edit_number')} data-role='edit-number-forget' cursor-pointer = true>{$login_OTP_EditNumber}</p>
+                    <p {$this->render_attributes('edit_number')} data-role='edit-number-forget' cursor-pointer = true>{$content['login_OTP_EditNumber']}</p>
                     <div {$this->render_attributes('login_input')}>
-                        <input {$this->render_attributes('otp_input')} type='tel' data-role='otp' placeholder='{$Forget_password_step2_placeholder}' />
+                        <input {$this->render_attributes('otp_input')} type='tel' data-role='otp' placeholder='{$content['Forget_password_step2_placeholder']}' />
                     </div>
                     <p {$this->render_attributes('resend_timer')} data-role='timer'></p>
                     <div {$this->render_attributes('resend_wrapper')}>
-                        <button {$this->render_attributes('otp_btn_resend')} data-role='resend' disabled>{$login_OTP_resendCode}</button>
+                        <button {$this->render_attributes('otp_btn_resend')} data-role='resend' disabled>{$content['login_OTP_resendCode']}</button>
                     </div>
                     <div {$this->render_attributes('message')} data-role='message'></div>
                 </div>
                 <button {$this->render_attributes('otp_btn_verify')} data-role='verify-forgot' disabled>
-                    <span class='btn-text' >{$Forget_password_step2_button_title}</span>
+                    <span class='btn-text' >{$content['Forget_password_step2_button_title']}</span>
                     <span class='btn-spinner'></span>
                 </button>
               </div>";
@@ -1492,16 +1036,16 @@ public function render() {
                         <img {$this->render_attributes('authSiteLogo')}  src='$site_logo_url' alt='Site Logo'>
                 </div>
                 <div {$this->render_attributes('header')}>
-                        <h2 {$this->render_attributes('title')} data-role='form-title'>{$Forget_password_step3_title}</h2>
-                        <p {$this->render_attributes('subtitle')} data-role='form-subtitle'>{$Forget_password_step3_subTitle}</p>
+                        <h2 {$this->render_attributes('title')} data-role='form-title'>{$content['Forget_password_step3_title']}</h2>
+                        <p {$this->render_attributes('subtitle')} data-role='form-subtitle'>{$content['Forget_password_step3_subTitle']}</p>
                 </div>
                 <div>
-                    <label {$this->render_attributes('forgot_label')}>{$Forget_password_step3_label}</label>
+                    <label {$this->render_attributes('forgot_label')}>{$content['Forget_password_step3_label']}</label>
                     <div {$this->render_attributes('password_input')} data-role='password-wrapper'>
                         <input
                             type='password'
                             data-role='new-password'
-                            placeholder='{$login_password_password_placeholder}'
+                            placeholder='{$content['login_password_password_placeholder']}'
                         >
                             <span {$this->render_attributes('password_icon')}
                                 data-role='toggle-password'
@@ -1533,7 +1077,7 @@ public function render() {
                     <div {$this->render_attributes('message')} data-role='message'></div>
                 </div>
                 <button {$this->render_attributes('forgot_btn')} data-role='reset-password'>
-                    <span class='btn-text' >{$Forget_password_step3_button_title}</span>
+                    <span class='btn-text' >{$content['Forget_password_step3_button_title']}</span>
                     <span class='btn-spinner'></span>
                 </button>
               </div>";

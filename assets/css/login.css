@@ -58,6 +58,160 @@ button.is-loading {
 }
 
 
+
+.auth-box {
+    display: flex;
+    flex-direction:column;
+    margin: auto;
+
+}
+
+.button-container {
+  display: flex;
+  flex-direction: column;
+  gap:16px;
+}
+
+.login-resend {
+  width: 100%;
+}
+
+.auth-title {
+    text-align: right;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 32px;
+}
+
+.auth-header h2 {
+    text-align: right;
+    font-size: 22px;
+}
+
+.auth-subtitle {
+    color: var(--black, #333);
+    text-align: right;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 24px;
+}
+
+.auth-step {
+  margin: 0px 0px;
+  display:flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.auth-step label {
+    color: var(--Grey-text, #727272);
+    text-align: right;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 24px;
+}
+
+.auth-step .login-input-password,.auth-step .login-input-login {
+    width: 100%;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+  	display: flex;
+ 		align-items:center;
+}
+
+.auth-step input {
+  border: none;
+  border-radius: 8px;
+    
+}
+
+
+.icon-eye-closed {
+    display: none;
+}
+
+.toggle-password.is-visible .icon-eye-open {
+    display: none;
+}
+
+.toggle-password.is-visible .icon-eye-closed {
+    display: block;
+}
+
+.auth-message {
+    min-height: 18px;
+    font-size: 13px;
+    color: #e74c3c;
+    margin-bottom: 10px;
+}
+
+.auth-btn {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.auth-link {
+    background: none;
+    border: none;
+    color: #3b82f6;
+    margin-top: 12px;
+    display: block;
+    width: 100%;
+    text-align: center;
+    cursor: pointer;
+}
+
+.auth-resend {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+
+.login-label-otp {
+    cursor: pointer;
+}
+
+.auth-subtitle.login-subtitle p {
+  margin: 0;
+}
+
+.login-btn-verify.active {
+    opacity: 1;
+    cursor: pointer;
+}
+
+.login-btn-verify:disabled {
+    opacity: 0.5;
+    background-color: #ABB5BD !important;
+    cursor: not-allowed;
+}
+
+.login-password-error {
+  display:flex;
+  gap: 12px;
+  align-items:center;
+}
+
+.main-header {
+  display:flex;
+}
+
+.auth-back-logo {
+    cursor: pointer;
+}
+
+
+
+
 @keyframes spin {
     to { transform: rotate(360deg); }
 }

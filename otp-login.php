@@ -1,7 +1,7 @@
 <?php
 /**
- * Plugin Name: login OTP Login for Bricks
- * Description: OTP login via login and a Bricks element.
+ * Plugin Name: Otp Login for Bricks
+ * Description: OTP login for Bricks builder.
  * Version: 1.0
  * Author: Arash Dadjoo
  */

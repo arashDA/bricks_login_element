@@ -116,13 +116,19 @@ The plugin uses a registry pattern in `sms-senders.php`. You can extend it to su
 This plugin is licensed under the GPL-2.0+ license.
 
 ## 🤝 Contributing
-For custom provider integrations or UI improvements, please submit a Pull Request on GitHub.
+
+Contributions are welcome! Please:
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Submit a pull request
 
 ## 📧 Support
-For technical issues or feature requests, contact Arash Dadjoo via the WordPress plugin repository or GitHub issues.
+For bug reports and feature requests, please use the [GitHub Issues](https://github.com/arashDA/bricks_login_element/issues) page.
 
 ## 👨‍💻 Author
 **Arash Dadjoo**
-- Professional WordPress & Bricks Developer
+- Website: https://arashdadjoo.ir/
+- GitHub: @arashDA
 
 **Made with ❤️ for WordPress developers**

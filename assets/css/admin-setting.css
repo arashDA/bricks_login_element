@@ -1,0 +1,92 @@
+.otp-settings-wrapper {
+    margin-top: 20px;
+    padding: 20px;
+}
+
+.otp-title{
+    background: #fff;
+    border-radius: 8px;
+    padding: 25px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.general-settings{
+    height: max-content;
+}
+
+.otp-title {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.otp-card {
+    background: #fff;
+    border-radius: 8px;
+    width: 50%;
+    padding: 25px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.otp-form {
+    display: flex;
+    gap: 20px;
+}
+
+.otp-card h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 18px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+.otp-field {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 18px;
+}
+
+.otp-field label {
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.otp-field input,
+.otp-field select {
+    padding: 8px 10px;
+    border-radius: 6px;
+    border: 1px solid #ccd0d4;
+    font-size: 14px;
+}
+
+.otp-row {
+    display: flex;
+    gap: 20px;
+}
+
+.otp-field.small {
+    flex: 1;
+}
+
+.provider-fields {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px dashed #ddd;
+}
+
+.otp-submit .button-primary {
+    background: #2271b1;
+    border: none;
+    box-shadow: none;
+    border-radius: 6px;
+    padding: 8px 18px;
+    font-weight: 500;
+    transition: 0.2s ease;
+}
+
+.otp-submit .button-primary:hover {
+    background: #135e96;
+}
+

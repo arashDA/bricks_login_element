@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Otp Login for Bricks
  * Description: OTP login for Bricks builder.
- * Version: 1.0
+ * Version: 1.1.0
  * Author: Arash Dadjoo
  */
 
@@ -10,6 +10,8 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 // Load email OTP logic 
 require_once plugin_dir_path(__FILE__) . 'includes/email.php';
+// Load SMS sender registry and implementations
+require_once plugin_dir_path(__FILE__) . 'includes/sms-senders.php';
 
 // Async hook for sending email OTP without blocking AJAX request
 add_action('login_send_email_otp_async', function($email, $otp) {
@@ -157,57 +159,13 @@ function login_get_user_by_phone_or_username($input){
   3. login SMS Sender
   Replace template ID and API key usage as needed
 ========================================================*/
-function login_send_sms($phone, $template_id, $params , $username, $password){
-
-
-    if (!$username || !$password) {
-        return new WP_Error('missing_credentials', 'نام کاربری / رمزعبور ملی پیامک تنظیم نشده است');
-    }
-
-    $phone = login_normalize_phone($phone);
-
-    if (strlen($phone) !== 10) {
-        return new WP_Error('invalid_phone','شماره تلفن نامعتبر است');
-    }
-
-    // Convert to full Iranian format
-    $to = '0' . $phone;
-
-    // Melipayamak SOAP API
-    ini_set("soap.wsdl_cache_enabled","0");
-
-    try {
-        $client = new SoapClient(
-            "http://api.payamak-panel.com/post/Send.asmx?wsdl",
-            ["encoding" => "UTF-8"]
-        );
-
-        $data = [
-            "username" => $username,
-            "password" => $password,
-            "to"       => $to,
-            "text"     => $params,     // array of parameters
-            "bodyId"   => $template_id // template ID
-        ];
-
-        $result = $client->SendByBaseNumber($data)->SendByBaseNumberResult;
-
-        if ($result < 0) {
-            return new WP_Error('sms_failed', 'Melipayamak error code: ' . $result);
-        }
-
-        return true;
-
-    } catch (Exception $e) {
-        return new WP_Error('sms_failed', $e->getMessage());
-    }
-}
+// SMS sending is delegated to includes/sms-senders.php (provider-based)
 
 
 /*========================================================
   4. OTP Logic
 ========================================================*/
-function login_send_otp($input, $username, $password, $template_id){
+function login_send_otp($input){
     global $wpdb;
 
     $table = $wpdb->prefix . 'login_otp';
@@ -253,9 +211,9 @@ function login_send_otp($input, $username, $password, $template_id){
 
 
     /*-----------------------------------------
-     * Send SMS OTP (always)
+     * Send SMS OTP (always) - delegate to provider configured in settings
      *----------------------------------------*/
-    $sms = login_send_sms($phone, $template_id, [$otp], $username, $password);
+    $sms = login_send_sms($phone, null, [$otp]);
 
     if (is_wp_error($sms)) {
         return $sms;
@@ -323,16 +281,8 @@ function login_ajax_send_otp(){
 
     if (!$phone) wp_send_json_error(['message'=>'شماره تلفن لازم است']);
 
-    // Get SMS credentials from admin settings
-    $username = get_option('otp_login_username');
-    $password = get_option('otp_login_password');
-    $template = get_option('otp_login_template_id');
-
-    if (!$username || !$password || !$template) {
-        wp_send_json_error(['message'=>'نام کاربری، رمزعبور و قالب پیامک در تنظیمات تعریف نشده است']);
-    }
-
-    $res = login_send_otp($phone, $username, $password, $template);
+    // Delegate to provider-based sender (credentials read from settings)
+    $res = login_send_otp($phone);
 
     if (is_wp_error($res)) {
         wp_send_json_error(['message'=>$res->get_error_message()]);
@@ -418,16 +368,8 @@ function login_ajax_send_otp_forgot(){
         wp_send_json_error(['message'=>'No account found with this phone number']);
     }
 
-    // Get SMS credentials from admin settings
-    $username = get_option('otp_login_username');
-    $password = get_option('otp_login_password');
-    $template = get_option('otp_login_template_id');
-
-    if (!$username || !$password || !$template) {
-        wp_send_json_error(['message'=>'username,password and sms template didnt implement in settings']);
-    }
-
-    $res = login_send_otp($phone, $username, $password, $template);
+    // Delegate to provider-based sender (credentials read from settings)
+    $res = login_send_otp($phone);
 
     if (is_wp_error($res)) {
         wp_send_json_error(['message'=>$res->get_error_message()]);
@@ -741,13 +683,46 @@ add_action('admin_menu', function () {
 
 
 add_action('admin_init', function () {
-    register_setting('otp_login_settings', 'otp_login_redirect');
-    register_setting('otp_login_settings', 'otp_login_countdown');
-    register_setting('otp_login_settings', 'otp_login_otp_length');
+        register_setting('otp_login_settings', 'otp_login_redirect');
+        register_setting('otp_login_settings', 'otp_login_countdown');
+        register_setting('otp_login_settings', 'otp_login_otp_length');
 
-    register_setting('otp_login_settings', 'otp_login_username');
-    register_setting('otp_login_settings', 'otp_login_password');
-    register_setting('otp_login_settings', 'otp_login_template_id');
+        // SMS provider selection and provider-specific credentials
+        register_setting('otp_login_settings', 'otp_sms_provider');
+        register_setting('otp_login_settings', 'otp_sms_melipayamak_username');
+        register_setting('otp_login_settings', 'otp_sms_melipayamak_password');
+        register_setting('otp_login_settings', 'otp_sms_melipayamak_template_id');
+        register_setting('otp_login_settings', 'otp_sms_msgway_api_key');
+        register_setting('otp_login_settings', 'otp_sms_msgway_sender');
+});
+
+// Enqueue admin JS for settings page to show/hide provider-specific fields
+add_action('admin_enqueue_scripts', function($hook) {
+    if ($hook !== 'toplevel_page_otp-login-settings') return;
+
+    $base_url  = plugin_dir_url( __FILE__ );
+    $base_path = plugin_dir_path( __FILE__ );
+
+    wp_register_script(
+        'otp-login-admin',
+        $base_url . 'assets/js/admin-settings.js',
+        ['jquery'],
+        file_exists( $base_path . 'assets/js/admin-settings.js' ) ? filemtime( $base_path . 'assets/js/admin-settings.js' ) : null,
+        true
+    );
+
+    wp_register_style(
+        'otp-login-admin',
+        $base_url . 'assets/css/admin-setting.css',
+        [],
+        file_exists( $base_path . 'assets/css/admin-setting.css' ) ? filemtime( $base_path . 'assets/css/admin-setting.css' ) : null
+    );
+
+    wp_enqueue_style('otp-login-admin');
+    wp_enqueue_script('otp-login-admin');
+    wp_localize_script('otp-login-admin', 'otpLoginAdminData', [
+        'selected' => get_option('otp_sms_provider','melipayamak')
+    ]);
 });
 
 /*========================================================
@@ -893,73 +868,176 @@ function myplugin_render_user_phone_content( $content, $post, $context = 'text' 
 
 function otp_login_settings_page() {
     ?>
-    <div class="wrap">
-        <h1>OTP Login Settings</h1>
+        <div class="otp-settings-wrapper">
 
-        <form method="post" action="options.php">
-            <?php settings_fields('otp_login_settings'); ?>
+            <h1 class="otp-title">OTP Login Settings</h1>
 
-            <table class="form-table">
+            <form method="post" action="options.php" class="otp-form">
+                <?php settings_fields('otp_login_settings'); ?>
 
-                <tr>
-                    <th>Redirect After Login</th>
-                    <td>
-                        <input type="text" name="otp_login_redirect"
-                               value="<?php echo esc_attr(get_option('otp_login_redirect', home_url('/'))); ?>"
-                               class="regular-text">
-                    </td>
-                </tr>
+                <!-- General Settings Card -->
+                <div class="otp-card general-settings">
+                    <h2>General Settings</h2>
 
-                <tr>
-                    <th>Resend Countdown (seconds)</th>
-                    <td>
-                        <input type="number" name="otp_login_countdown"
-                               value="<?php echo esc_attr(get_option('otp_login_countdown', 120)); ?>"
-                               class="small-text">
-                    </td>
-                </tr>
+                    <div class="otp-field">
+                        <label>Redirect After Login</label>
+                        <input type="text"
+                                name="otp_login_redirect"
+                                value="<?php echo esc_attr(get_option('otp_login_redirect', home_url('/'))); ?>">
+                    </div>
 
-                <tr>
-                    <th>OTP Length</th>
-                    <td>
-                        <input type="number" name="otp_login_otp_length"
-                               value="<?php echo esc_attr(get_option('otp_login_otp_length', 6)); ?>"
-                               class="small-text">
-                    </td>
-                </tr>
+                    <div class="otp-row">
+                        <div class="otp-field small">
+                            <label>Resend Countdown (seconds)</label>
+                            <input type="number"
+                                    name="otp_login_countdown"
+                                    value="<?php echo esc_attr(get_option('otp_login_countdown', 120)); ?>">
+                        </div>
 
-                <tr>
-                    <th>Melipayamak Username</th>
-                    <td>
-                        <input type="text" name="otp_login_username"
-                               value="<?php echo esc_attr(get_option('otp_login_username')); ?>"
-                               class="regular-text">
-                    </td>
-                </tr>
+                        <div class="otp-field small">
+                            <label>OTP Length</label>
+                            <input type="number"
+                                    name="otp_login_otp_length"
+                                    value="<?php echo esc_attr(get_option('otp_login_otp_length', 6)); ?>">
+                        </div>
+                    </div>
+                </div>
 
-                <tr>
-                    <th>Melipayamak Password</th>
-                    <td>
-                        <input type="password" name="otp_login_password"
-                               value="<?php echo esc_attr(get_option('otp_login_password')); ?>"
-                               class="regular-text">
-                    </td>
-                </tr>
+                <!-- SMS Provider Card -->
+                <div class="otp-card">
+                    <h2>SMS Provider</h2>
 
-                <tr>
-                    <th>Melipayamak Template ID</th>
-                    <td>
-                        <input type="number" name="otp_login_template_id"
-                               value="<?php echo esc_attr(get_option('otp_login_template_id')); ?>"
-                               class="small-text">
-                    </td>
-                </tr>
+                    <div class="otp-field">
+                        <label>Select Provider</label>
+                        <select name="otp_sms_provider" id="otp_sms_provider">
+                            <option value="melipayamak" <?php selected(get_option('otp_sms_provider','melipayamak'), 'melipayamak'); ?>>MeliPayamak</option>
+                            <option value="msgway" <?php selected(get_option('otp_sms_provider','melipayamak'), 'msgway'); ?>>MSGWay</option>
+                            <option value="smsir" <?php selected(get_option('otp_sms_provider','melipayamak'), 'smsir'); ?>>SMS.ir</option>
+                            <option value="kavenegar" <?php selected(get_option('otp_sms_provider','melipayamak'), 'kavenegar'); ?>>Kavenegar</option>
+                            <option value="none" <?php selected(get_option('otp_sms_provider','melipayamak'), 'none'); ?>>Disabled</option>
+                        </select>
+                    </div>
 
-            </table>
+                    <!-- Melipayamak -->
+                    <div class="provider-fields" data-provider="melipayamak">
+                        <div class="otp-field">
+                            <label>Melipayamak Username</label>
+                            <input type="text"
+                                    name="otp_sms_melipayamak_username"
+                                    value="<?php echo esc_attr(get_option('otp_sms_melipayamak_username')); ?>">
+                        </div>
 
-            <?php submit_button(); ?>
-        </form>
-    </div>
+                        <div class="otp-field">
+                            <label>Melipayamak Password</label>
+                            <input type="password"
+                                    name="otp_sms_melipayamak_password"
+                                    value="<?php echo esc_attr(get_option('otp_sms_melipayamak_password')); ?>">
+                        </div>
+
+                        <div class="otp-field small">
+                            <label>Template ID</label>
+                            <input type="number"
+                                    name="otp_sms_melipayamak_template_id"
+                                    value="<?php echo esc_attr(get_option('otp_sms_melipayamak_template_id')); ?>">
+                        </div>
+                    </div>
+
+                    <!-- Msgway -->
+                    <div class="provider-fields" data-provider="msgway">
+                        <div class="otp-field">
+                            <label>Msgway API Key</label>
+                            <input type="text"
+                                name="otp_sms_msgway_api_key"
+                                value="<?php echo esc_attr(get_option('otp_sms_msgway_api_key')); ?>"
+                                autocomplete="off">
+                            <p class="description">
+                                Your API key from Msgway dashboard.
+                            </p>
+                        </div>
+
+                        <div class="otp-field">
+                            <label>Msgway Template ID</label>
+                            <input type="number"
+                                name="otp_sms_msgway_template_id"
+                                value="<?php echo esc_attr(get_option('otp_sms_msgway_template_id')); ?>"
+                                min="1">
+                            <p class="description">
+                                Enter the template ID created in your Msgway panel.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Kavenegar -->
+                    <div class="provider-fields" data-provider="kavenegar">
+
+                        <div class="otp-field">
+                            <label for="otp_sms_kavenegar_api_key">
+                                <strong>Kavenegar API Key</strong>
+                            </label>
+                            <input type="text"
+                                id="otp_sms_kavenegar_api_key"
+                                name="otp_sms_kavenegar_api_key"
+                                value="<?php echo esc_attr(get_option('otp_sms_kavenegar_api_key')); ?>"
+                                autocomplete="off">
+                            <p class="description">
+                                Your API key from Kavenegar dashboard.
+                            </p>
+                        </div>
+
+                        <div class="otp-field">
+                            <label for="otp_sms_kavenegar_template_name">
+                                <strong>Kavenegar Template Name</strong>
+                            </label>
+                            <input type="text"
+                                id="otp_sms_kavenegar_template_name"
+                                name="otp_sms_kavenegar_template_name"
+                                value="<?php echo esc_attr(get_option('otp_sms_kavenegar_template_name')); ?>">
+                            <p class="description">
+                                Enter the template name created in your Kavenegar panel.
+                            </p>
+                        </div>
+
+                    </div>
+
+                    <!-- SMS.IR -->
+                    <div class="provider-fields" data-provider="smsir">
+
+                        <div class="otp-field">
+                            <label for="otp_sms_smsir_api_key">
+                                <strong>SMS.ir API Key</strong>
+                            </label>
+                            <input type="text"
+                                id="otp_sms_smsir_api_key"
+                                name="otp_sms_smsir_api_key"
+                                value="<?php echo esc_attr(get_option('otp_sms_smsir_api_key')); ?>"
+                                autocomplete="off">
+                            <p class="description">
+                                Your API key from SMS.ir dashboard.
+                            </p>
+                        </div>
+
+                        <div class="otp-field">
+                            <label for="otp_sms_smsir_template_id">
+                                <strong>SMS.ir Template ID</strong>
+                            </label>
+                            <input type="text"
+                                id="otp_sms_smsir_template_id"
+                                name="otp_sms_smsir_template_id"
+                                value="<?php echo esc_attr(get_option('otp_sms_smsir_template_id')); ?>">
+                            <p class="description">
+                                Enter the template ID created in your SMS.ir panel.
+                            </p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </form>
+            <div class="otp-submit">
+                <?php submit_button('Save Settings'); ?>
+            </div>
+        </div>
     <?php
 }
 

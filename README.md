@@ -1,141 +1,128 @@
-## OTP Login for Bricks
+# Otp Login for Bricks
 
-A WordPress plugin that provides OTP-based login functionality integrated with Bricks Builder. It supports login via SMS OTP (using Melipayamak API), email OTP for existing users, password login, and password reset flows. Includes a custom Bricks element for easy integration into your site.
+![Version](https://img.shields.io/badge/version-1.1.0-blue.svg)
+![License](https://img.shields.io/badge/license-GPL--2.0+-green.svg)
+![WordPress](https://img.shields.io/badge/WordPress-5.0+-blue.svg)
 
-## Features
+A professional WordPress plugin for secure, multi-provider OTP authentication fully integrated with Bricks Builder. Transition from traditional passwords to a seamless mobile-first login experience with real-time styling controls.
 
-- **OTP Login via SMS**: Send verification codes to users' phones using Melipayamak SMS service.
-- **Email OTP Fallback**: Automatically sends OTP via email to existing users with valid email addresses.
-- **Password Login**: Alternative login with phone and password.
-- **User Registration**: Automatically registers new users with auto-generated emails if not found.
-- **Password Reset**: Forgot password flow with OTP verification and new password setup.
-- **Bricks Builder Integration**: Custom element for drag-and-drop login forms in Bricks.
-- **Customizable Settings**: Admin panel for configuring SMS credentials, OTP length, countdown timer, and redirect URL.
-- **Secure and Asynchronous**: Uses WordPress nonces, AJAX handlers, and async email sending.
-- **Responsive Design**: Frontend assets (CSS/JS) for a mobile-friendly login experience.
-- **Countdown Timer**: For OTP resend with visual feedback.
-- **Error Handling**: User-friendly messages for invalid inputs, expired OTPs, etc.
+## ✨ Features
 
-## Requirements
+### Request Monitoring
+- **Real-time SMS Tracking**: Monitor OTP delivery through integrated provider logs.
+- **Verification Status**: Track successful vs. failed login attempts in the database.
+- **AJAX State Handling**: Real-time UI feedback for loading, success, and error states.
 
-- WordPress 5.0+
-- Bricks Builder 1.0+
-- PHP 7.4+
-- Melipayamak account for SMS (username, password, and template ID required)
-- Database access (creates a custom table for OTP storage)
+### Request Management
+- **Multi-Provider SMS**: Built-in support for Melipayamak, MsgWay, and SMS.ir.
+- **Email Fallback**: Automatically switch to email delivery if SMS credit is low or service is unavailable.
+- **Phone Normalization**: Automatic conversion of Persian/Arabic digits to English for API compatibility.
 
-## Installation
+### Professional UI
+- **Bricks Native**: A dedicated custom element that lives directly inside the Bricks Builder.
+- **Live Preview**: Assets (CSS/JS) load within the editor so you see exactly what you’re building.
+- **Dynamic Icons**: Customizable SVG support for Site Logos, Back Buttons, and Message Icons.
+- **Mobile Optimized**: Auto-focusing inputs and zoom-prevention logic for a better mobile UX.
 
-1. Download the plugin ZIP file.
-2. In your WordPress admin dashboard, go to **Plugins > Add New**.
-3. Click **Upload Plugin** and select the ZIP file.
-4. Activate the plugin.
-5. Upon activation, the plugin creates a database table for OTP storage.
+### Settings & Configuration
+- **Tabbed Admin UI**: A modern, JavaScript-powered settings page for easy configuration.
+- **Global OTP Controls**: Set custom OTP lengths and resend countdown timers.
+- **Template Management**: Configure SMS Template IDs and Email headers globally.
 
-Alternatively, install via FTP:
-- Upload the plugin folder to `/wp-content/plugins/`.
-- Activate the plugin in the WordPress admin.
+### Database & Logs
+- **Dedicated Table**: Uses a custom `wp_login_otp` table for high-performance code verification.
+- **Auto-Cleanup**: Efficiently manages expired codes to keep your database lean.
 
-## Configuration
+## 🚀 Installation
 
-After activation, configure the plugin settings:
+### Requirements
+- **WordPress**: 5.8+
+- **Bricks Builder**: 1.5+
+- **PHP**: 7.4 or higher
+- **SMS Account**: Credentials for Melipayamak, MsgWay, SMS.ir , Kavenegar and IPpanel
 
-1. Go to **WP Admin > OTP Login** (under the menu).
-2. Enter your Melipayamak credentials:
-   - Username
-   - Password
-   - Template ID (for OTP messages)
-3. Set general options:
-   - Redirect After Login: URL to redirect users after successful login (default: homepage).
-   - Resend Countdown: Time in seconds before allowing OTP resend (default: 120).
-   - OTP Length: Number of digits in the OTP code (default: 6).
-4. Save changes.
+1. Upload the `otp-login` folder to the `/wp-content/plugins/` directory.
+2. Activate the plugin through the **Plugins** menu in WordPress.
+3. Go to **Otp Login** in the admin sidebar to configure your API keys.
 
-**Note**: SMS sending requires valid Melipayamak credentials. Test thoroughly to ensure delivery.
+## 📖 Usage
 
-## Usage
+### Dashboard
+- The main settings page allows you to choose your active SMS provider and enter your API credentials.
+- Toggle between providers instantly without losing settings for the others.
 
-### Adding the Login Form in Bricks
+### Managing Requests
+- All authentication happens via the `wp-admin/admin-ajax.php` endpoint. 
+- Ensure your firewall allows requests to your chosen SMS provider's API endpoints.
 
-1. Edit a page or template in Bricks Builder.
-2. Search for the "Login OTP" element in the elements panel (under the "webcoq" category).
-3. Drag it onto your canvas.
-4. Customize the element's controls in the Bricks sidebar:
-   - **Content Tab**: Labels, placeholders, titles, subtitles for each step (Login, Password, OTP, Set Password, Forgot Password).
-   - **Style Tab**: Customize inputs, buttons, labels, messages, icons, etc., with typography, colors, backgrounds, and more.
-   - Icons: Upload custom back and site logos.
-5. Save and preview the page.
+### Review Modal
+- Use the **Bricks Builder** to drag the "Login OTP" element onto any page.
+- Use the "Content" tab to modify labels and the "Style" tab to control colors, spacing, and typography.
 
-### Login Flows
+### Settings
+- **General**: Set redirect URLs for successful logins and the default OTP timeout.
+- **Provider-Specific**: Enter Template IDs and API Keys for your specific SMS service.
 
-- **OTP Login**:
-  - Enter phone number → Send OTP → Verify OTP → Login/Register.
-- **Password Login**:
-  - Switch to password mode → Enter phone and password → Login.
-- **Forgot Password**:
-  - Enter phone → Send OTP (only if user exists) → Verify OTP → Set new password.
+### Clear Logs
+- Expired OTP entries are automatically invalidated, ensuring codes cannot be reused after the timeout period.
 
-The form handles auto-focus, input validation, Persian/English digit conversion, and loading states.
+## Architecture
 
-### Frontend Assets
+### File Structure
+- `otp-login.php`: Core logic and AJAX handler registration.
+- `includes/sms-senders.php`: The SMS provider registry and API implementations.
+- `includes/email.php`: Fallback email delivery logic.
+- `bricks/elements/login.php`: The Bricks Builder element definition and controls.
+- `assets/js/login.js`: Frontend state machine for the multi-step form.
 
-- CSS: `assets/css/login.css` (styles for messages, buttons, loaders).
-- JS: `assets/js/login.js` (handles AJAX, timers, input events).
-- Icons: SVG assets for error/notice/success and password toggle.
+### Database Tables
+- `wp_login_otp`: 
+    - `phone`: User identifier.
+    - `code`: Hashed/Stored OTP.
+    - `expires`: Expiry timestamp.
+    - `verified`: Boolean flag for successful checks.
 
-Assets are enqueued on the frontend and in Bricks editor previews.
+## 🔐 Security
+- **Nonces**: All AJAX actions are secured with WordPress nonces.
+- **Input Sanitization**: All phone numbers and codes are sanitized before database entry.
+- **Secure Redirects**: Post-login redirection uses `wp_safe_redirect`.
 
-## Database
+## 🎯 Use Cases
+- **LMS Sites**: Fast login for students via mobile number.
+- **E-commerce**: Reduce cart abandonment with one-click phone verification.
+- **Client Portals**: Secure access without requiring users to remember complex passwords.
 
-- Creates a table: `{prefix}_login_otp` for storing phone, OTP code, expiration, and verification status.
-- Table is created on activation via `dbDelta`.
+## 📊 API Reference
+The plugin uses a registry pattern in `sms-senders.php`. You can extend it to support new providers by adding a case to the `login_send_sms` function.
 
-## Hooks and Actions
+## 🐛 Troubleshooting
+- **SMS Not Sending**: Verify your Template ID and ensure your account has enough credit.
+- **Styling Not Reflecting**: Clear your Bricks Builder cache and regenerate CSS.
+- **Timer Issues**: Ensure your server time matches the visitor's local timezone.
 
-- AJAX Endpoints: `login_send_otp`, `login_verify_otp`, `login_register_user`, etc.
-- Async Email: Uses `wp_schedule_single_event` for non-blocking email OTPs.
-- Custom Hooks: `login_send_email_otp_async`.
+## 📝 Changelog
 
-## Troubleshooting
+### Version 1.1.0 - Current
+- **New**: Added support for MsgWay, SMS.ir , Kavenegar and IPpanel providers.
+- **New**: Redesigned Admin Settings page with dynamic provider switching.
+- **Improvement**: Added Site Logo and Back Icon controls to Bricks element.
+- **Improvement**: Enqueued editor-specific scripts for live styling previews.
 
-- **SMS Not Sending**: Check Melipayamak credentials in settings. Ensure the phone number is in the correct format (10 digits, no leading zeros or country codes).
-- **Email Not Sending**: Verify `wp_mail` works on your site. Emails are only sent to existing users with non-generated emails.
-- **OTP Table Issues**: Deactivate/reactivate the plugin to recreate the table.
-- **Bricks Element Not Showing**: Ensure Bricks is active and the element file (`bricks/elements/login.php`) is loaded.
-- **JavaScript Errors**: Check console for nonce issues or AJAX URL mismatches.
-- **Phone Normalization**: Handles Persian digits and common prefixes (0098, 098, etc.).
+### Version 1.0.0
+- Initial release with Melipayamak SMS support.
+- Core Bricks Element integration.
 
-For logs: Check WordPress error logs for SMS/email failures.
+## 📜 License
+This plugin is licensed under the GPL-2.0+ license.
 
-## Development
+## 🤝 Contributing
+For custom provider integrations or UI improvements, please submit a Pull Request on GitHub.
 
-- **Files**:
-  - `otp-login.php`: Main plugin file (activation, hooks, AJAX).
-  - `email.php`: Email OTP sending logic.
-  - `bricks/elements/login.php`: Bricks element class (controls, rendering).
-  - `assets/js/login.js`: Frontend JavaScript (AJAX, timers, inputs).
-  - `assets/css/login.css`: Styles for messages and loaders.
-- **Customization**: Extend via WordPress hooks or modify the Bricks element controls.
+## 📧 Support
+For technical issues or feature requests, contact Arash Dadjoo via the WordPress plugin repository or GitHub issues.
 
-## Changelog
+## 👨‍💻 Author
+**Arash Dadjoo**
+- Professional WordPress & Bricks Developer
 
-### 1.0 - Initial Release (Release Date: [Insert Release Date])
-
-- Initial release of the plugin.
-- Added core features: OTP login via SMS and email, password login, user registration, and password reset.
-- Integrated with Bricks Builder via a custom "Login OTP" element.
-- Admin settings panel for SMS credentials, OTP configuration, and redirect options.
-- Frontend assets for responsive design, countdown timers, and error messaging.
-- Database table for OTP storage and secure AJAX handlers.
-
-## License
-
-This plugin is licensed under the GPLv2 or later. See [LICENSE](LICENSE) for details.
-
-## Support
-
-- Author: Arash Dadjoo
-- For issues: Open a GitHub issue or contact via email (arashdadjoo3@gmail.com).
-- Contributions: Pull requests welcome!
-
-If you find this plugin useful, consider starring the repo or leaving a review!
+**Made with ❤️ for WordPress developers**

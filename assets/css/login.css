@@ -144,8 +144,6 @@ button.is-loading {
 .auth-message {
     min-height: 18px;
     font-size: 13px;
-    color: #e74c3c;
-    margin-bottom: 10px;
 }
 
 .auth-btn {

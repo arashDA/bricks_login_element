@@ -798,6 +798,35 @@
         }
     });
 
+    // ENABLE/DISABLE REGISTER/RESET BUTTON WHEN SET-PASSWORD INPUT LENGTH CHANGES
+    document.addEventListener('input', function (e) {
+        const input = e.target;
+        const role = input.getAttribute && input.getAttribute('data-role');
+                cosnole.log('Password input changed, checking role...', role);
+        if (role !== 'new-password' && role !== 'password-field' && role !== 'reset-password') return;
+
+        const wrapper = input.closest('.login-otp-wrapper');
+        console.log('Password input changed, checking buttons...', wrapper);
+        if (!wrapper) return;
+
+        // Find any register/reset buttons scoped to set-password or forgot-3 steps, or global ones
+        const buttons = wrapper.querySelectorAll(
+            "[data-step='3'] [data-role='register'], [data-step='forgot-3'] [data-role='reset-password'], [data-role='register'], [data-role='reset-password']"
+        );
+
+        console.log(buttons);
+        if (!buttons || buttons.length === 0) return;
+
+        const val = (input.value || '').trim();
+        const enable = val.length >= 8;
+
+        buttons.forEach(btn => {
+            btn.disabled = !enable;
+            if (enable) btn.removeAttribute('aria-disabled');
+            else btn.setAttribute('aria-disabled', 'true');
+        });
+    });
+
 
 
 })();

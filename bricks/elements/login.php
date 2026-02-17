@@ -57,6 +57,7 @@ public function set_control_groups() {
         'style_loginWithPassword'     => 'Login With Password',
         'typography'                  => 'Typography',
         'style_subHeader'             => 'SubHeader',
+        'style_middle_section'        => 'Middle Section Login With Password', 
         'style_timer_label'           => 'Reset Timer',
         'style_login_password_error'  => 'Login Password Error',
         'style_login_with_otp_button' => 'Login With Otp Button',
@@ -68,6 +69,7 @@ public function set_control_groups() {
         'style_notice_message_text'   => 'Notice Message Text',
         'style_back_logo'             => 'Style Icon Back',
         'style_site_logo'             => 'Style Site Logo',
+        'style_password_btn_forget'   => 'Forgot Password Link',
     ];
 
     foreach ($style_groups as $key => $title) {
@@ -323,6 +325,12 @@ private function generate_step_controls() {
             'selector' => '.login-btn',
             'controls' => ['typography', 'text', 'padding', 'margin', 'background','border','height','hover_bg','hover_text']
         ],
+        'forgotPasswordLink' => [
+            'title'    => 'Forgot Password Link',
+            'group'    => 'style_password_btn_forget',
+            'selector' => '.password-btn-forget',
+            'controls' => ['typography', 'text', 'padding', 'margin', 'background']
+        ],
     ];
 
     // Input configurations for each step (matched group names)
@@ -477,6 +485,12 @@ private function generate_step_controls() {
             'group'    => 'style_subHeader',
             'selector' => '.login-header',
             'controls' => ['typography', 'margin','padding','border','width','height','background']
+        ],
+        'middlesection' => [
+            'title'    => 'Middle Section',
+            'group'    => 'style_middle_section',
+            'selector' => '.middle-section',
+            'controls' => ['background', 'border', 'height', 'width', 'margin','padding']
         ],
 
     ];
@@ -692,42 +706,43 @@ public function render() {
         $icon_url = plugins_url( 'assets/img/AlertIcon.svg', __FILE__ );
         // Base element classes
         $this->set_attribute('mainHeader', 'class', 'main-header');   
-        $this->set_attribute('header', 'class', 'auth-header login-header');
-        $this->set_attribute('title', 'class', 'auth-title login-title');
-        $this->set_attribute('subtitle', 'class', 'auth-subtitle login-subtitle');
-        $this->set_attribute('step', 'class', 'auth-step login-step');
-        $this->set_attribute('message', 'class', 'auth-message login-message');
-        $this->set_attribute('resend_wrapper', 'class', 'auth-resend login-resend');
+        $this->set_attribute('header', 'class', 'login-header auth-header');
+        $this->set_attribute('title', 'class', 'login-title auth-title');
+        $this->set_attribute('subtitle', 'class', 'login-subtitle auth-subtitle');
+        $this->set_attribute('step', 'class', 'login-step auth-step');
+        $this->set_attribute('message', 'class', 'login-message auth-message');
+        $this->set_attribute('resend_wrapper', 'class', 'login-resend auth-resend');
         // Step-specific login elements
-        $this->set_attribute('login_label', 'class', 'auth-step-label login-label login-label-login');
-        $this->set_attribute('login_input', 'class', 'auth-step-input login-input login-input-login');
-        $this->set_attribute('login_btn_send', 'class', 'auth-btn login-btn login-btn-send');
-        $this->set_attribute('login_btn_switch', 'class', 'auth-btn login-btn-switch login-with-password');
+        $this->set_attribute('login_label', 'class', 'login-label-login login-label auth-step-label');
+        $this->set_attribute('login_input', 'class', 'login-input-login login-input auth-step-input');
+        $this->set_attribute('login_btn_send', 'class', 'login-btn-send login-btn auth-btn');
+        $this->set_attribute('login_btn_switch', 'class', 'login-with-password login-btn-switch auth-btn');
         // Step-specific password elements
-        $this->set_attribute('password_label', 'class', 'auth-step-label login-label login-label-password');
-        $this->set_attribute('password_input', 'class', 'auth-step-input login-input login-input-password');
-        $this->set_attribute('password_btn_login', 'class', 'auth-btn login-btn login-btn-password');
-        $this->set_attribute('password_btn_forgot', 'class', 'auth-btn login-btn-forgot');
-        $this->set_attribute('password_btn_otp', 'class', 'auth-btn login-btn-otp');
-        $this->set_attribute('login_password_error', 'class', 'auth-btn login-password-error');
+        $this->set_attribute('password_label', 'class', 'login-label-password login-label auth-step-label');
+        $this->set_attribute('password_input', 'class', 'login-input-password login-input auth-step-input');
+        $this->set_attribute('password_btn_login', 'class', 'login-btn-password login-btn auth-btn');
+        $this->set_attribute('password_btn_forgot', 'class', 'password-btn-forget login-btn-forgot auth-btn');
+        $this->set_attribute('password_btn_otp', 'class', 'login-btn-otp auth-btn');
+        $this->set_attribute('login_password_error', 'class', 'login-password-error auth-btn');
+        $this->set_attribute('middleSectionLoginWpassword', 'class', 'middle-section');
         // icon and country code
-        $this->set_attribute('password_icon', 'class', 'password-icon toggle-password');
+        $this->set_attribute('password_icon', 'class', 'toggle-password password-icon');
         $this->set_attribute('country_code', 'class', 'country-code');
         // Step-specific OTP elements
-        $this->set_attribute('otp_input', 'class', 'auth-step-input login-input login-input-otp');
-        $this->set_attribute('edit_number', 'class', 'auth-step-label login-label login-label-otp');
-        $this->set_attribute('otp_btn_verify', 'class', 'auth-btn login-btn login-btn-verify');
-        $this->set_attribute('otp_btn_resend', 'class', 'resend-otp login-btn-resend');
+        $this->set_attribute('otp_input', 'class', 'login-input-otp');
+        $this->set_attribute('edit_number', 'class', 'login-label-otp');
+        $this->set_attribute('otp_btn_verify', 'class', 'login-btn-verify login-btn auth-btn');
+        $this->set_attribute('otp_btn_resend', 'class', 'login-btn-resend resend-otp');
         $this->set_attribute('resend_timer','class','resend-timer');
         // Step-specific set password elements
-        $this->set_attribute('setpassword_label', 'class', 'auth-step-label login-label login-label-setpassword');
-        $this->set_attribute('setpassword_input', 'class', 'auth-step-input login-input login-input-setpassword');
-        $this->set_attribute('setpassword_btn', 'class', 'auth-btn login-btn login-btn-register');
+        $this->set_attribute('setpassword_label', 'class', 'login-label-setpassword login-label auth-step-label');
+        $this->set_attribute('setpassword_input', 'class', 'login-input-setpassword login-input auth-step-input');
+        $this->set_attribute('setpassword_btn', 'class', 'login-btn-register login-btn auth-btn');
         $this->set_attribute('password_wrapper', 'class', 'login-password-wrapper');
         // Step-specific forgot password elements
-        $this->set_attribute('forgot_label', 'class', 'auth-step-label login-label login-label-forgot');
-        $this->set_attribute('forgot_input', 'class', 'auth-step-input login-input login-input-forgot');
-        $this->set_attribute('forgot_btn', 'class', 'auth-btn login-btn login-btn-forgot');
+        $this->set_attribute('forgot_label', 'class', 'login-label-forgot login-label auth-step-label');
+        $this->set_attribute('forgot_input', 'class', 'login-input-forgot login-input auth-step-input');
+        $this->set_attribute('forgot_btn', 'class', 'login-btn-forgot login-btn auth-btn');
 
         // ICON
         $back_logo = $this->settings['backlogo'] ?? null;
@@ -829,7 +844,7 @@ public function render() {
                     </div>
                 </div>";
         // Step 1b: Phone + Password (Password Login)
-        echo "<div {$this->render_attributes('step')} data-role='step' data-step='password' style='display:none;'  >
+        echo "<div {$this->render_attributes('step')} data-role='step' data-step='password' style='display:none;' >
                 <div {$this->render_attributes('mainHeader')}>
                         <img data-role='switch-to-otp' {$this->render_attributes('authBackLogo')}  src='$back_logo_url' alt='Back Logo'>
                         <img {$this->render_attributes('authSiteLogo')}  src='$site_logo_url' alt='Site Logo'>
@@ -838,7 +853,7 @@ public function render() {
                     <h2 {$this->render_attributes('title')} data-role='form-title'>{$content['login_password_title']}</h2>
                     <p {$this->render_attributes('subtitle')} data-role='form-subtitle'>{$content['login_password_Subtitle']}</p>
                 </div>
-                <div>
+                <div {$this->render_attributes('middleSectionLoginWpassword')}>
                     <div>
                         <label {$this->render_attributes('password_label')}>{$content['login_password_username_label']}</label>
                         <div {$this->render_attributes('password_input')}>
@@ -894,7 +909,7 @@ public function render() {
                 </div>
               </div>";
         // Step 2: OTP
-        echo "<div {$this->render_attributes('step')} data-role='step' data-step='2' style='display:none;' >
+        echo "<div {$this->render_attributes('step')} data-role='step' data-step='2' style='display:none;'>
                     <div {$this->render_attributes('mainHeader')}>
                             <img data-role='edit-number' {$this->render_attributes('authBackLogo')}  src='$back_logo_url' alt='Back Logo'>
                             <img {$this->render_attributes('authSiteLogo')}  src='$site_logo_url' alt='Site Logo'>
@@ -973,7 +988,7 @@ public function render() {
                     </div>
                     <div {$this->render_attributes('message')} data-role='message'></div>
                 </div>
-                    <button {$this->render_attributes('setpassword_btn')} data-role='register'>
+                    <button {$this->render_attributes('setpassword_btn')} data-role='register' disabled>
                         <span class='btn-text' >{$content['set_password_button_title']}</span>
                         <span class='btn-spinner'></span>
                     </button>
@@ -1076,7 +1091,7 @@ public function render() {
                     </div>
                     <div {$this->render_attributes('message')} data-role='message'></div>
                 </div>
-                <button {$this->render_attributes('forgot_btn')} data-role='reset-password'>
+                <button {$this->render_attributes('forgot_btn')} data-role='reset-password' disabled>
                     <span class='btn-text' >{$content['Forget_password_step3_button_title']}</span>
                     <span class='btn-spinner'></span>
                 </button>

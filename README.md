@@ -9,29 +9,32 @@ A professional WordPress plugin for secure, multi-provider OTP authentication fu
 ## ✨ Features
 
 ### Request Monitoring
-- **Real-time SMS Tracking**: Monitor OTP delivery through integrated provider logs.
-- **Verification Status**: Track successful vs. failed login attempts in the database.
-- **AJAX State Handling**: Real-time UI feedback for loading, success, and error states.
+- **Real-time SMS Tracking**: Monitor OTP delivery through integrated provider logs.  
+- **Verification Status**: Track successful vs. failed login attempts in the database.  
+- **AJAX State Handling**: Real-time UI feedback for loading, success, and error states.  
 
 ### Request Management
-- **Multi-Provider SMS**: Built-in support for Melipayamak, MsgWay, and SMS.ir.
-- **Email Fallback**: Automatically switch to email delivery if SMS credit is low or service is unavailable.
-- **Phone Normalization**: Automatic conversion of Persian/Arabic digits to English for API compatibility.
+- **Multi-Provider SMS**: Built-in support for Melipayamak, MsgWay, SMS.ir, and Kavenegar.  
+- **Email Fallback**: Automatically switch to email delivery if SMS credit is low or service is unavailable.  
+- **Phone Normalization**: Automatic conversion of Persian/Arabic digits to English for API compatibility.  
 
 ### Professional UI
-- **Bricks Native**: A dedicated custom element that lives directly inside the Bricks Builder.
-- **Live Preview**: Assets (CSS/JS) load within the editor so you see exactly what you’re building.
-- **Dynamic Icons**: Customizable SVG support for Site Logos, Back Buttons, and Message Icons.
-- **Mobile Optimized**: Auto-focusing inputs and zoom-prevention logic for a better mobile UX.
+- **Bricks Native**: A dedicated custom element that lives directly inside the Bricks Builder.  
+- **Live Preview**: Assets (CSS/JS) load within the editor so you see exactly what you’re building.  
+- **Dynamic Icons**: Customizable SVG support for Site Logos, Back Buttons, and Message Icons.  
+- **Mobile Optimized**: Auto-focusing inputs and zoom-prevention logic for a better mobile UX.  
 
 ### Settings & Configuration
-- **Tabbed Admin UI**: A modern, JavaScript-powered settings page for easy configuration.
-- **Global OTP Controls**: Set custom OTP lengths and resend countdown timers.
-- **Template Management**: Configure SMS Template IDs and Email headers globally.
+- **Tabbed Admin UI**: A modern, JavaScript-powered settings page for easy configuration.  
+- **Global OTP Controls**: Set custom OTP lengths and resend countdown timers.  
+- **Template Management**: Configure SMS Template IDs and Email headers globally.  
+- **Custom Login Redirect**: Define where users are redirected after successful authentication.  
+- **Custom Logout Redirect**: Control where users are redirected after logout. Defaults to homepage if not configured.  
 
 ### Database & Logs
-- **Dedicated Table**: Uses a custom `wp_login_otp` table for high-performance code verification.
-- **Auto-Cleanup**: Efficiently manages expired codes to keep your database lean.
+- **Dedicated Table**: Uses a custom `wp_login_otp` table for high-performance code verification.  
+- **Auto-Cleanup**: Efficiently manages expired codes to keep your database lean.  
+
 
 ## 🚀 Installation
 

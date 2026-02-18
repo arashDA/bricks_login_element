@@ -27,6 +27,7 @@
         if (s) {
             s.style.display = 'flex';  // Or 'block' if not using flex
             // Focus first input to activate keyboard without zoom
+            
             requestAnimationFrame(() => {
                 const firstInput = s.querySelector('input:not([type="hidden"])');
                 if (firstInput) {
@@ -801,31 +802,34 @@
     // ENABLE/DISABLE REGISTER/RESET BUTTON WHEN SET-PASSWORD INPUT LENGTH CHANGES
     document.addEventListener('input', function (e) {
         const input = e.target;
-        const role = input.getAttribute && input.getAttribute('data-role');
-                cosnole.log('Password input changed, checking role...', role);
-        if (role !== 'new-password' && role !== 'password-field' && role !== 'reset-password') return;
+
+        // Only react to password fields
+        if (!input.matches("[data-role='new-password'], [data-role='password-field']")) return;
 
         const wrapper = input.closest('.login-otp-wrapper');
-        console.log('Password input changed, checking buttons...', wrapper);
         if (!wrapper) return;
 
-        // Find any register/reset buttons scoped to set-password or forgot-3 steps, or global ones
-        const buttons = wrapper.querySelectorAll(
-            "[data-step='3'] [data-role='register'], [data-step='forgot-3'] [data-role='reset-password'], [data-role='register'], [data-role='reset-password']"
+        const value = (input.value || '').trim();
+        const isValid = value.length >= 8;
+
+        // Only target buttons inside the same step as this input
+        const step = input.closest('[data-step]');
+        if (!step) return;
+
+        const buttons = step.querySelectorAll(
+            "[data-role='register'], [data-role='reset-password']"
         );
 
-        console.log(buttons);
-        if (!buttons || buttons.length === 0) return;
-
-        const val = (input.value || '').trim();
-        const enable = val.length >= 8;
-
         buttons.forEach(btn => {
-            btn.disabled = !enable;
-            if (enable) btn.removeAttribute('aria-disabled');
-            else btn.setAttribute('aria-disabled', 'true');
+            btn.disabled = !isValid;
+            btn.setAttribute('aria-disabled', String(!isValid));
         });
     });
+
+
+
+
+
 
 
 

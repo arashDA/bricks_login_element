@@ -944,6 +944,7 @@ function otp_login_settings_page() {
                                 <option value="msgway" <?php selected(get_option('otp_sms_provider','melipayamak'), 'msgway'); ?>>MSGWay</option>
                                 <option value="smsir" <?php selected(get_option('otp_sms_provider','melipayamak'), 'smsir'); ?>>SMS.ir</option>
                                 <option value="kavenegar" <?php selected(get_option('otp_sms_provider','melipayamak'), 'kavenegar'); ?>>Kavenegar</option>
+                                <option value="ippannel" <?php selected(get_option('otp_sms_provider','melipayamak'), 'ippannel'); ?>>IPPannel</option>
                                 <option value="none" <?php selected(get_option('otp_sms_provider','melipayamak'), 'none'); ?>>Disabled</option>
                             </select>
                         </div>
@@ -1056,6 +1057,51 @@ function otp_login_settings_page() {
                                     value="<?php echo esc_attr(get_option('otp_sms_smsir_template_id')); ?>">
                                 <p class="description">
                                     Enter the template ID created in your SMS.ir panel.
+                                </p>
+                            </div>
+
+                        </div>
+
+                        <!-- IPPannel -->
+                        <div class="provider-fields" data-provider="ippannel">
+
+                            <div class="otp-field">
+                                <label for="otp_sms_ippannel_api_key">
+                                    <strong>IPPannel API Key</strong>
+                                </label>
+                                <input type="text"
+                                    id="otp_sms_ippannel_api_key"
+                                    name="otp_sms_ippannel_api_key"
+                                    value="<?php echo esc_attr(get_option('otp_sms_ippannel_api_key')); ?>"
+                                    autocomplete="off">
+                                <p class="description">
+                                    Your API key from IPPannel dashboard.
+                                </p>
+                            </div>
+
+                            <div class="otp-field">
+                                <label for="otp_sms_ippannel_template_id">
+                                    <strong>IPPannel Pattern Code</strong>
+                                </label>
+                                <input type="text"
+                                    id="otp_sms_ippannel_template_id"
+                                    name="otp_sms_ippannel_template_id"
+                                    value="<?php echo esc_attr(get_option('otp_sms_ippannel_template_id')); ?>">
+                                <p class="description">
+                                    Enter the Pattern Code created in your IPPannel panel.
+                                </p>
+                            </div>
+
+                            <div class="otp-field">
+                                <label for="otp_sms_ippannel_originator">
+                                    <strong>IPPannel Originator</strong>
+                                </label>
+                                <input type="text"
+                                    id="otp_sms_ippannel_originator"
+                                    name="otp_sms_ippannel_originator"
+                                    value="<?php echo esc_attr(get_option('otp_sms_ippannel_originator')); ?>">
+                                <p class="description">
+                                    Enter the Originator created in your IPPannel panel.
                                 </p>
                             </div>
 

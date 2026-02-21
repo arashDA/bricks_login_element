@@ -304,6 +304,66 @@ function login_sms_send_smsir($phone,$api_key,$template_id,$parameters = []) {
 }
 
 
+/**
+ * IPPanel sender implementation .
+ * Returns true on success or WP_Error on failure.
+ */
+function login_sms_send_ippanel($phone, $api_key, $pattern_code, $originator, $parameters = []) {
+
+    if (!$api_key) {
+        return new WP_Error('missing_credentials', 'IPPanel API key not configured');
+    }
+
+    if (!function_exists('login_normalize_phone')) {
+        return new WP_Error('missing_helper', 'Phone normalization helper missing');
+    }
+
+    // Normalize phone (your helper)
+    $phone = login_normalize_phone($phone);
+
+    if (strlen($phone) !== 10) {
+        return new WP_Error('invalid_phone', 'شماره تلفن نامعتبر است');
+    }
+
+    // Convert to 09XXXXXXXXX
+    $mobile = '0' . $phone;
+
+    // Load IPPanel SDK
+    if (!class_exists('\IPPanel\Client')) {
+        return new WP_Error('missing_sdk', 'IPPanel SDK not loaded');
+    }
+
+    try {
+        // Create client
+        $client = new \IPPanel\Client($api_key);
+
+        // Pattern values must be associative array
+        $pattern_values = [];
+        foreach ((array) $parameters as $key => $value) {
+            $pattern_values[$key] = (string) $value;
+        }
+
+        // Send SMS with pattern
+        $message_id = $client->sendPattern(
+            $pattern_code,   // pattern code
+            $originator,     // originator number (e.g. +9810001)
+            "98{$phone}",    // recipient (must be 98XXXXXXXXXX)
+            $pattern_values  // pattern values
+        );
+
+        return true;
+
+    } catch (\IPPanel\Errors\Error $e) {
+        return new WP_Error('ippanel_error', $e->getMessage());
+    } catch (\IPPanel\Errors\HttpException $e) {
+        return new WP_Error('ippanel_http_error', $e->getMessage());
+    } catch (Exception $e) {
+        return new WP_Error('ippanel_unknown_error', $e->getMessage());
+    }
+}
+
+
+
 
 
 /**

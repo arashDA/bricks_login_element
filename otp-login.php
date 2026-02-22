@@ -680,6 +680,31 @@ add_action('wp_logout', function () {
 
 });
 
+// redirect user to my-account if they are logined in and try to access login page
+add_action( 'template_redirect', function() {
+
+    if ( is_page( 'login' ) ) {
+
+        // If user is logged in
+        if ( is_user_logged_in() ) {
+
+            // Check query parameters
+            $forgot     = isset($_GET['forgot']) ? $_GET['forgot'] : null;
+            $return_to  = isset($_GET['return_to']) ? $_GET['return_to'] : null;
+
+            // If special forgot URL exists → allow access
+            if ( $forgot === '1' && $return_to ) {
+                return; // do NOT redirect
+            }
+
+            // Otherwise redirect normally
+            wp_redirect( home_url( '/my-account' ) );
+            exit;
+        }
+    }
+
+});
+
 
 
 

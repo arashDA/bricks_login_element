@@ -754,7 +754,7 @@ public function render() {
         $this->set_attribute('authSiteLogo', 'class', 'auth-site-logo');
 
 
-        $this->set_attribute('authBackLogo','onclick', 'window.history.back()');
+        $this->set_attribute('authBackHandler','onclick', 'window.history.back()');
 
         $otp_length = intval(get_option('otp_login_otp_length', 4));
 
@@ -820,7 +820,7 @@ public function render() {
         // Step 1: Phone (OTP Login)
         echo "<div {$this->render_attributes('step')} data-role='step' data-step='1'>
                     <div {$this->render_attributes('mainHeader')}>
-                            <img {$this->render_attributes('authBackLogo')}  src='$back_logo_url' alt='Back Logo'>
+                            <img {$this->render_attributes('authBackLogo' , 'authBackHandler')}  src='$back_logo_url' alt='Back Logo'>
                             <img {$this->render_attributes('authSiteLogo')}  src='$site_logo_url' alt='Site Logo'>
                     </div>
                     <div {$this->render_attributes('header')}>

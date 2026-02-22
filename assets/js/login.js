@@ -249,11 +249,23 @@
 
         // SWITCH TO PASSWORD LOGIN
         if (role === 'switch-to-password') {
+
+            // If user came with explicit return_to param → go back to that page
+            if (wrapper._state && wrapper._state.returnTo) {
+                window.location.href = wrapper._state.returnTo;
+                return;
+            }
+
+            // Otherwise fallback to original behavior
             showStep(wrapper, 'password');
-            // Copy phone value into password step if empty
+
             const mainPhone = qs("[data-step='1'] [data-role='phone']", wrapper);
             const pwdPhone = qs("[data-step='password'] [data-role='phone']", wrapper);
-            if (mainPhone && pwdPhone && !pwdPhone.value.trim()) pwdPhone.value = mainPhone.value;
+
+            if (mainPhone && pwdPhone && !pwdPhone.value.trim()) {
+                pwdPhone.value = mainPhone.value;
+            }
+
             return;
         }
 
@@ -769,33 +781,69 @@
     });
 
 
-        document.addEventListener('click', function (e) {
-            const toggle = e.target.closest('[data-role="toggle-password"]');
-            if (!toggle) return;
+    document.addEventListener('click', function (e) {
+        const toggle = e.target.closest('[data-role="toggle-password"]');
+        if (!toggle) return;
 
-            const wrapper = toggle.closest('[data-role="password-wrapper"]');
-            if (!wrapper) return;
+        const wrapper = toggle.closest('[data-role="password-wrapper"]');
+        if (!wrapper) return;
 
-            // works for password-field AND new-password
-            const input = wrapper.querySelector('input[type="password"], input[type="text"]');
-            if (!input) return;
+        // works for password-field AND new-password
+        const input = wrapper.querySelector('input[type="password"], input[type="text"]');
+        if (!input) return;
 
-            const isPassword = input.type === 'password';
+        const isPassword = input.type === 'password';
 
-            input.type = isPassword ? 'text' : 'password';
-            toggle.classList.toggle('is-visible', isPassword);
-        });
+        input.type = isPassword ? 'text' : 'password';
+        toggle.classList.toggle('is-visible', isPassword);
+    });
 
     // Initial load call
+    // document.addEventListener('DOMContentLoaded', () => {
+    //     const wrapper = document.querySelector('.login-otp-wrapper');  // Get wrapper on load
+    //     if (wrapper) {
+    //         wrapper._state = wrapper._state || {};
+    //         // Prefer a server-provided return target (data-return-to), else use document.referrer when available
+    //         wrapper._state.returnTo = wrapper.dataset.returnTo || (document.referrer && document.referrer !== window.location.href ? document.referrer : null);
+    //         showStep(wrapper, '1');  // Or your initial step, e.g., 'password'
+    //     } else {
+    //         console.error('Wrapper not found on load');
+    //     }
+    // });
+    // Initial load call
     document.addEventListener('DOMContentLoaded', () => {
-        const wrapper = document.querySelector('.login-otp-wrapper');  // Get wrapper on load
-        if (wrapper) {
-            wrapper._state = wrapper._state || {};
-            // Prefer a server-provided return target (data-return-to), else use document.referrer when available
-            wrapper._state.returnTo = wrapper.dataset.returnTo || (document.referrer && document.referrer !== window.location.href ? document.referrer : null);
-            showStep(wrapper, '1');  // Or your initial step, e.g., 'password'
-        } else {
+        const wrapper = document.querySelector('.login-otp-wrapper');
+        if (!wrapper) {
             console.error('Wrapper not found on load');
+            return;
+        }
+
+        wrapper._state = wrapper._state || {};
+
+        const urlParams = new URLSearchParams(window.location.search);
+
+        // Detect forgot password trigger
+        const openForgot = urlParams.get('forgot');
+
+        // Detect explicit return target
+        const returnToParam = urlParams.get('return_to');
+
+        // Set return URL priority:
+        // 1) URL param
+        // 2) data-return-to attribute
+        // 3) document.referrer (if valid)
+        wrapper._state.returnTo =
+            returnToParam ||
+            wrapper.dataset.returnTo ||
+            (document.referrer && document.referrer !== window.location.href
+                ? document.referrer
+                : null);
+
+        // Open correct initial step
+        if (openForgot === '1') {
+            showStep(wrapper, 'forgot-1');
+        } else {
+            showStep(wrapper, '1');
         }
     });
 

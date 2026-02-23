@@ -152,12 +152,42 @@
         }
 
         // Helper to pick best redirect URL: prefer the page user came from (returnTo),
-        // then any stored loginRedirect, then server-provided redirect, then plugin default.
+        // then server-provided redirect, then plugin default.
         function getRedirectUrl(resData) {
-            if (wrapper._state && wrapper._state.returnTo) return wrapper._state.returnTo;
-            if (wrapper._state && wrapper._state.loginRedirect) return wrapper._state.loginRedirect;
-            if (resData && resData.redirect) return resData.redirect;
-            return (typeof loginOtpData !== 'undefined' && loginOtpData.redirect) ? loginOtpData.redirect : '/';
+            // Helper: check if admin actually set a meaningful custom redirect
+            const hasCustomRedirect = loginOtpData?.redirect 
+                && loginOtpData.redirect.trim() !== '' 
+                && loginOtpData.redirect !== home_url('/')
+                && loginOtpData.redirect !== window.location.origin + '/'
+                && loginOtpData.redirect !== '/';
+
+            // 1. If admin HAS set a custom redirect → use it (highest priority when set)
+            if (hasCustomRedirect) {
+                return loginOtpData.redirect;
+            }
+
+            // 2. If no custom redirect was set → prefer the page the user came from
+            if (wrapper._state?.returnTo) {
+                try {
+                    const url = new URL(wrapper._state.returnTo, window.location.origin);
+                    // Security: only allow same-origin URLs
+                    if (url.origin === window.location.origin) {
+                        return url.toString();
+                    } else {
+                        console.warn('return_to is not same origin – ignoring for security');
+                    }
+                } catch (err) {
+                    console.warn('Invalid return_to value', err);
+                }
+            }
+
+            // 3. If server sent an explicit redirect in JSON (fallback)
+            if (resData?.redirect) {
+                return resData.redirect;
+            }
+
+            // 4. Ultimate fallback – home
+            return home_url ? home_url('/') : '/';
         }
 
         // Find the message element inside the currently visible step so messages
@@ -251,10 +281,10 @@
         if (role === 'switch-to-password') {
 
             // If user came with explicit return_to param → go back to that page
-            if (wrapper._state && wrapper._state.returnTo) {
-                window.location.href = wrapper._state.returnTo;
-                return;
-            }
+            // if (wrapper._state && wrapper._state.returnTo) {
+            //     window.location.href = wrapper._state.returnTo;
+            //     return;
+            // }
 
             // Otherwise fallback to original behavior
             showStep(wrapper, 'password');
@@ -476,7 +506,6 @@
                     // New user → show password step
                     if (res.data.status === 'need_password') {
                         wrapper._state.forgotPhone = phone; // Store phone for next step
-                        wrapper._state.loginRedirect = res.data?.redirect; // Store redirect URL
                         showStep(wrapper, '3');
                     }
 
@@ -799,18 +828,6 @@
     });
 
     // Initial load call
-    // document.addEventListener('DOMContentLoaded', () => {
-    //     const wrapper = document.querySelector('.login-otp-wrapper');  // Get wrapper on load
-    //     if (wrapper) {
-    //         wrapper._state = wrapper._state || {};
-    //         // Prefer a server-provided return target (data-return-to), else use document.referrer when available
-    //         wrapper._state.returnTo = wrapper.dataset.returnTo || (document.referrer && document.referrer !== window.location.href ? document.referrer : null);
-    //         showStep(wrapper, '1');  // Or your initial step, e.g., 'password'
-    //     } else {
-    //         console.error('Wrapper not found on load');
-    //     }
-    // });
-    // Initial load call
     document.addEventListener('DOMContentLoaded', () => {
         const wrapper = document.querySelector('.login-otp-wrapper');
         if (!wrapper) {
@@ -828,16 +845,8 @@
         // Detect explicit return target
         const returnToParam = urlParams.get('return_to');
 
-        // Set return URL priority:
-        // 1) URL param
-        // 2) data-return-to attribute
-        // 3) document.referrer (if valid)
-        wrapper._state.returnTo =
-            returnToParam ||
-            wrapper.dataset.returnTo ||
-            (document.referrer && document.referrer !== window.location.href
-                ? document.referrer
-                : null);
+        // Set return URL param
+        wrapper._state.returnTo = returnToParam
 
         // Open correct initial step
         if (openForgot === '1') {

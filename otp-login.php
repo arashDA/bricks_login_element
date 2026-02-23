@@ -409,15 +409,24 @@ function login_ajax_verify_otp(){
     $users = login_get_user_by_phone_or_username(login_normalize_phone($phone));
 
     if (!empty($users)) {
-        // User exists → login
         $user_id = $users[0]->ID;
         wp_set_current_user($user_id);
         wp_set_auth_cookie($user_id);
 
+        $redirect = home_url('/'); // default
+
+        if (!empty($_GET['return_to'])) {
+            $redirect = esc_url_raw($_GET['return_to']);
+            // Optional: add basic same-origin check
+            if (strpos($redirect, home_url()) !== 0) {
+                $redirect = home_url('/'); // prevent open redirect
+            }
+        }
+
         wp_send_json_success([
-            'message' => 'Logged in',
-            'status'  => 'logged_in',
-            'redirect' => esc_url(isset($_COOKIE['otp_prev_page']) ? $_COOKIE['otp_prev_page'] : home_url('/'))
+            'message'  => 'Logged in',
+            'status'   => 'logged_in',
+            'redirect' => $redirect
         ]);
     }
 
@@ -425,7 +434,7 @@ function login_ajax_verify_otp(){
     wp_send_json_success([
         'message' => 'OTP verified, password required',
         'status'  => 'need_password',
-        'redirect' => esc_url(isset($_COOKIE['otp_prev_page']) ? $_COOKIE['otp_prev_page'] : home_url('/'))
+        'redirect' => home_url('/')
     ]);
 }
 
@@ -487,10 +496,19 @@ function login_ajax_register_user(){
     wp_set_current_user($user_id);
     wp_set_auth_cookie($user_id);
 
+    $redirect = home_url('/');
+
+    if (!empty($_GET['return_to'])) {
+        $redirect = esc_url_raw($_GET['return_to']);
+        if (strpos($redirect, home_url()) !== 0) {
+            $redirect = home_url('/');
+        }
+    }
+
     wp_send_json_success([
         'message'  => 'Registered and logged in',
         'status'   => 'registered',
-        'redirect' => esc_url(isset($_COOKIE['otp_prev_page']) ? $_COOKIE['otp_prev_page'] : home_url('/'))
+        'redirect' => $redirect
     ]);
 }
 
@@ -531,10 +549,14 @@ function login_ajax_verify_password(){
     wp_set_current_user($user->ID);
     wp_set_auth_cookie($user->ID);
 
+    $redirect = !empty($_GET['return_to'])
+        ? esc_url_raw($_GET['return_to'])
+        : home_url('/');
+
     wp_send_json_success([
         'message' => 'Logged in successfully',
         'status'  => 'logged_in',
-        'redirect' => esc_url(isset($_COOKIE['otp_prev_page']) ? $_COOKIE['otp_prev_page'] : home_url('/'))
+        'redirect' => $redirect
     ]);
 }
 
@@ -566,7 +588,8 @@ function login_ajax_forgot_verify_otp(){
 
     wp_send_json_success([
         'message' => 'OTP verified. Set new password.',
-        'status'  => 'reset_password'
+        'status'  => 'reset_password',
+        'redirect' => $redirect
     ]);
 }
 
@@ -598,8 +621,11 @@ function login_ajax_reset_password(){
     wp_set_password($password, $user_id);
 
     wp_send_json_success([
-        'message' => 'Password changed successfully',
-        'status'  => 'password_changed'
+        'message'  => 'Password changed successfully',
+        'status'   => 'password_changed',
+        'redirect' => !empty($_GET['return_to'])
+            ? esc_url_raw($_GET['return_to'])
+            : home_url('/')
     ]);
 }
 
@@ -658,13 +684,46 @@ add_action( 'wp_enqueue_scripts', function() {
 });
 
 
+// early priority to redirect before other logic runs
+add_action('init', function() {
 
-// set the coockie for redirect after login
-add_action('init', function () {
-    if (!is_user_logged_in()){
-        setcookie('otp_prev_page', esc_url_raw($_SERVER['REQUEST_URI']), time() + 300, '/');
+    if (is_user_logged_in() || !empty($_GET['return_to']) || !empty($_GET['redirect_to'])) {
+        return;
     }
-});
+
+    $is_login_page = is_page('login');
+
+    if (!$is_login_page) {
+        $request_uri = trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');
+        $login_slug  = trim(parse_url(home_url('/login/'), PHP_URL_PATH), '/');
+        $is_login_page = ($request_uri === $login_slug);
+    }
+
+    if ($is_login_page) {
+
+        // Get referring page slug
+        $referer = wp_get_referer();
+
+        if (!$referer) {
+            return;
+        }
+
+        $referer_path = trim(parse_url($referer, PHP_URL_PATH), '/');
+
+        // Do not allow login to redirect to itself
+        if ($referer_path === 'login') {
+            return;
+        }
+
+        // Build clean URL manually (no encoding)
+        $new_url = home_url('/login/?return_to=/' . $referer_path);
+
+        wp_safe_redirect($new_url);
+        exit;
+    }
+
+}, 5);
+
 
 // Redirect users to configured URL after logout
 add_action('wp_logout', function () {

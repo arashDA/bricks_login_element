@@ -155,11 +155,11 @@
         // then server-provided redirect, then plugin default.
         function getRedirectUrl(resData) {
             // Helper: check if admin actually set a meaningful custom redirect
-            const hasCustomRedirect = loginOtpData?.redirect 
-                && loginOtpData.redirect.trim() !== '' 
-                && loginOtpData.redirect !== home_url('/')
-                && loginOtpData.redirect !== window.location.origin + '/'
-                && loginOtpData.redirect !== '/';
+            const redirectUrl = loginOtpData?.redirect?.trim();
+
+            const hasCustomRedirect =
+                redirectUrl &&
+                redirectUrl !== ''
 
             // 1. If admin HAS set a custom redirect → use it (highest priority when set)
             if (hasCustomRedirect) {

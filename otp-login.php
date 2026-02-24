@@ -782,10 +782,10 @@ add_action('admin_menu', function () {
 
 
 add_action('admin_init', function () {
-    register_setting('otp_login_settings', 'otp_login_redirect');
-    register_setting('otp_login_settings', 'otp_login_countdown');
-    register_setting('otp_login_settings', 'otp_login_otp_length');
-    register_setting('otp_login_settings', 'otp_login_logout_redirect');
+    register_setting('otp_login_settings', 'otp_login_redirect', [ 'sanitize_callback' => 'otp_sanitize_redirect' ]);
+    register_setting('otp_login_settings', 'otp_login_countdown', [ 'sanitize_callback' => 'otp_sanitize_countdown' ]);
+    register_setting('otp_login_settings', 'otp_login_otp_length', [ 'sanitize_callback' => 'otp_sanitize_otp_length' ]);
+    register_setting('otp_login_settings', 'otp_login_logout_redirect', [ 'sanitize_callback' => 'otp_sanitize_logout_redirect' ]);
 
         // SMS provider selection and provider-specific credentials
         register_setting('otp_login_settings', 'otp_sms_provider');
@@ -795,6 +795,45 @@ add_action('admin_init', function () {
         register_setting('otp_login_settings', 'otp_sms_msgway_api_key');
         register_setting('otp_login_settings', 'otp_sms_msgway_sender');
 });
+
+/**
+ * Sanitizers / validators for admin settings
+ */
+function otp_sanitize_redirect($value){
+    $value = trim((string)$value);
+    if ($value === '') {
+        // empty is allowed for login redirect — frontend will fallback to referrer
+        return '';
+    }
+    return esc_url_raw($value);
+}
+
+function otp_sanitize_logout_redirect($value){
+    $value = trim((string)$value);
+    if ($value === '') {
+        add_settings_error('otp_login_settings', 'otp_logout_required', __('Redirect After Logout is required.', 'otp-login'), 'error');
+        return get_option('otp_login_logout_redirect', '');
+    }
+    return esc_url_raw($value);
+}
+
+function otp_sanitize_countdown($value){
+    $val = intval($value);
+    if ($val < 10) {
+        add_settings_error('otp_login_settings', 'otp_countdown_required', __('Resend Countdown must be at least 10 seconds.', 'otp-login'), 'error');
+        return intval(get_option('otp_login_countdown', 120));
+    }
+    return $val;
+}
+
+function otp_sanitize_otp_length($value){
+    $val = intval($value);
+    if ($val < 4 || $val > 8) {
+        add_settings_error('otp_login_settings', 'otp_length_required', __('OTP Length must be between 4 and 8 digits.', 'otp-login'), 'error');
+        return intval(get_option('otp_login_otp_length', 6));
+    }
+    return $val;
+}
 
 // Enqueue admin JS for settings page to show/hide provider-specific fields
 add_action('admin_enqueue_scripts', function($hook) {
@@ -970,10 +1009,20 @@ function otp_login_settings_page() {
     ?>
         <div class="otp-settings-wrapper">
 
-            <?php if ( isset( $_GET['settings-updated'] ) ) : ?>
-                <div class="otp-notice success">
-                    <p><?php echo esc_html__( 'Settings saved successfully.', 'otp-login' ); ?></p>
-                </div>
+            <?php
+                $otp_settings_errors = get_settings_errors('otp_login_settings');
+
+                if ( ! empty( $otp_settings_errors ) ) {
+                        foreach ( $otp_settings_errors as $err ) {
+                        $message = isset( $err['message'] ) ? $err['message'] : '';
+                        echo '<div class="otp-notice error"><p>' . esc_html( $message ) . '</p></div>';
+                        }
+                    }
+
+                if ( isset( $_GET['settings-updated'] ) && empty( $otp_settings_errors ) ) : ?>
+                    <div class="otp-notice success">
+                        <p><?php echo esc_html__( 'Settings saved successfully.', 'otp-login' ); ?></p>
+                    </div>
             <?php endif; ?>
 
             <h1 class="otp-title">OTP Login Settings</h1>
@@ -991,28 +1040,35 @@ function otp_login_settings_page() {
                             <input type="text"
                                     name="otp_login_redirect"
                                     value="<?php echo esc_attr(get_option('otp_login_redirect', home_url('/'))); ?>">
+                            <p class="notice-wrapper">If this field is left empty, the user will be redirected to the page they came from after login.</p>
                         </div>
 
                         <div class="otp-field">
-                            <label>Redirect After Logout</label>
+                            <label>Redirect After Logout <span class="required" style="color:#d00;margin-left:6px">*</span></label>
                             <input type="text"
                                     name="otp_login_logout_redirect"
-                                    value="<?php echo esc_attr(get_option('otp_login_logout_redirect', '')); ?>">
+                                    value="<?php echo esc_attr(get_option('otp_login_logout_redirect', '')); ?>"
+                                    >
                         </div>
 
                         <div class="otp-row">
                             <div class="otp-field small">
-                                <label>Resend Countdown (seconds)</label>
+                                <label>Resend Countdown (seconds) <span class="required" style="color:#d00;margin-left:6px">*</span></label>
                                 <input type="number"
-                                        name="otp_login_countdown"
-                                        value="<?php echo esc_attr(get_option('otp_login_countdown', 120)); ?>">
+                                    name="otp_login_countdown"
+                                    value="<?php echo esc_attr(get_option('otp_login_countdown', 120)); ?>"
+                                    min="10"
+                                    >
                             </div>
 
                             <div class="otp-field small">
-                                <label>OTP Length</label>
+                                <label>OTP Length <span class="required" style="color:#d00;margin-left:6px">*</span></label>
                                 <input type="number"
-                                        name="otp_login_otp_length"
-                                        value="<?php echo esc_attr(get_option('otp_login_otp_length', 6)); ?>">
+                                    name="otp_login_otp_length"
+                                    value="<?php echo esc_attr(get_option('otp_login_otp_length', 6)); ?>"
+                                    min="4"
+                                    max="8"
+                                    >
                             </div>
                         </div>
                     </div>

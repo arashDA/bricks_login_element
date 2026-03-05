@@ -766,6 +766,31 @@ add_action( 'template_redirect', function() {
 
 
 
+add_action( 'template_redirect', 'protect_my_account_pages_redirect_to_login', 5 );
+
+function protect_my_account_pages_redirect_to_login() {
+
+    if ( ! is_account_page() ) {
+        return;
+    }
+
+    if ( is_user_logged_in() ) {
+        return;
+    }
+
+    $login_url = home_url('/login');
+
+    // Only the path part
+    $return_to = urlencode( $_SERVER['REQUEST_URI'] );
+
+    $return_url = add_query_arg( 'return_to', $return_to, $login_url );
+
+    wp_redirect( $return_url );
+    exit;
+}
+
+
+
 
 // admin page for settings could be added here
 add_action('admin_menu', function () {
